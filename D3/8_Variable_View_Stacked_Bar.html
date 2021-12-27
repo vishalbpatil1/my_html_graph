@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<!--
+Copyright 2018 SAS Institute Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <!-- Import D3.js -->
+  <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+
+  <!-- Import d3-tip -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+
+  <!-- Import utilities  -->
+  <script type="text/javascript" src="../../util/messagingUtil.js"></script>
+  <script type="text/javascript" src="../../util/contentUtil.js"></script>
+</head>
+<body>
+<style type="text/css">
+  html, body, svg {
+    overflow: hidden;
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+  }
+
+  text {
+    font-family: Verdana, sans-serif;
+  }
+
+  .legend-title {
+    font-size: .9em;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: hanging;
+  }
+
+  .legend-text {
+    font-size: .8em;
+    dominant-baseline: central;
+  }
+
+  .legend-rect {
+    stroke-width: 1;
+  }
+
+  .x-axis, .y-axis {
+    font-size: .8em;
+  }
+
+  .x-label {
+    font-size: .9em;
+    text-anchor: Middle;
+    dominant-baseline: ideographic;
+  }
+
+  .y-label {
+    font-size: .9em;
+    dominant-baseline: hanging;
+  }
+
+  .d3-tip {
+    pointer-events: none !important;
+    background: white;
+    position: relative;
+    border: 1px solid #C4C4C4;
+    border-radius: 2px;
+  }
+
+  /* Create arrow on tooltip */
+  .d3-tip.n:before, .d3-tip.ne:before, .d3-tip.nw:before, .d3-tip.s:before, .d3-tip.se:before, .d3-tip.sw:before {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-width: 5px 10px 5px 0;
+    border-color: transparent #C4C4C4;
+    transform-origin: 0% 0%;
+  }
+
+  .d3-tip.n:after, .d3-tip.ne:after, .d3-tip.nw:after, .d3-tip.s:after, .d3-tip.se:after, .d3-tip.sw:after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-width: 4px 8px 4px 0;
+    border-color: transparent #fff;
+    transform-origin: 0% 0%;
+  }
+
+  /* Move the arrow depending on direction */
+  /* North */
+  .d3-tip.n:before, .d3-tip.n:after {
+    top: 100%;
+    left: 50%;
+    transform: rotate(-90deg) translate(-10px, -5px);
+  }
+
+  .d3-tip.n:after {
+    transform: rotate(-90deg) translate(-7px, -4px);
+  }
+
+  /* North east */
+  .d3-tip.ne:before, .d3-tip.ne:after {
+    top: 100%;
+    left: 0%;
+    transform: rotate(-45deg) translate(-6px, -5px);
+  }
+
+  .d3-tip.ne:after {
+    transform: rotate(-45deg) translate(-3px, -4px);
+  }
+
+  /* North west */
+  .d3-tip.nw:before, .d3-tip.nw:after {
+    top: 100%;
+    left: 100%;
+    transform: rotate(-135deg) translate(-6px, -5px);
+  }
+
+  .d3-tip.nw:after {
+    transform: rotate(-135deg) translate(-3px, -4px);
+  }
+
+  /* South */
+  .d3-tip.s:before, .d3-tip.s:after {
+    top: 0%;
+    left: 50%;
+    transform: rotate(90deg) translate(-10px, -5px);
+  }
+
+  .d3-tip.s:after {
+    transform: rotate(90deg) translate(-7px, -4px);
+  }
+
+  /* South east */
+  .d3-tip.se:before, .d3-tip.se:after {
+    top: 0%;
+    left: 0%;
+    transform: rotate(45deg) translate(-6px, -5px);
+  }
+
+  .d3-tip.se:after {
+    transform: rotate(45deg) translate(-3px, -4px);
+  }
+
+  /* South west */
+  .d3-tip.sw:before, .d3-tip.sw:after {
+    top: 0%;
+    left: 100%;
+    transform: rotate(135deg) translate(-6px, -5px);
+  }
+
+  .d3-tip.sw:after {
+    transform: rotate(135deg) translate(-3px, -4px);
+  }
+
+  /* Style tip content */
+  .d3-tip-content {
+    white-space: nowrap;
+    font-family: Verdana, sans-serif;
+    font-size: .9em;
+    text-align: left;
+  }
+</style>
+
+<script>
+"use strict";
+
+document.addEventListener("DOMContentLoaded", function() {
+  /******************************************************* Declare variables *******************************************************/
+
+  // Static data variables
+  const SVG_ID = "vvs-bar"; // ID of SVG element
+  const SAMPLE_MESSAGE = {
+    version: "1",
+    resultName: "dd427",
+    rowCount: 22,
+    availableRowCount: 22,
+    data: [
+      ["1960", "Andorra", 223, "Left Aligned", 0],
+      ["1960", "Belgium", 221, "Center Aligned", 1],
+      ["1961", "Andorra", 243, "Left Aligned", 0],
+      ["1961", "Belgium", 168, "Center Aligned", 1],
+      ["1962", "Andorra", 70, "Left Aligned", 0],
+      ["1962", "Belgium", 50, "Center Aligned", 1],
+      ["1963", "Andorra", 88, "Left Aligned", 0],
+      ["1963", "Belgium", 69, "Center Aligned", 1],
+      ["1964", "Andorra", 174, "Left Aligned", 0],
+      ["1964", "Belgium", 218, "Center Aligned", 1],
+      ["1965", "Andorra", 232, "Left Aligned", 0],
+      ["1965", "Belgium", 281, "Center Aligned", 1],
+      ["1966", "Andorra", 212, "Left Aligned", 0],
+      ["1966", "Belgium", 178, "Center Aligned", 1],
+      ["1967", "Andorra", 252, "Left Aligned", 0],
+      ["1967", "Belgium", 260, "Center Aligned", 1],
+      ["1968", "Andorra", 179, "Left Aligned", 0],
+      ["1968", "Belgium", 75, "Center Aligned", 1],
+      ["1969", "Andorra", 223, "Left Aligned", 0],
+      ["1969", "Belgium", 118, "Center Aligned", 1],
+      ["1970", "Andorra", 98, "Left Aligned", 0],
+      ["1970", "Belgium", 120, "Center Aligned", 1]
+    ],
+    columns: [
+      {
+        name: "bi423",
+        label: "Year",
+        type: "string"
+      },
+      {
+        name: "bi424",
+        label: "Country",
+        type: "string"
+      },
+      {
+        name: "bi428",
+        label: "Population (in millions)",
+        type: "number",
+        usage: "quantitative",
+        aggregation: "sum",
+        format: {
+          name: "BEST",
+          width: 12,
+          precision: 0,
+          formatString: "BEST12."
+        }
+      },
+      {
+        name: "bi425",
+        label: "View",
+        type: "string"
+      },
+      {
+        name: "ri1",
+        type: "number",
+        usage: "brush",
+        format: {
+          name: "COMMA",
+          width: 12,
+          precision: 2,
+          formatString: "COMMA12.2"
+        }
+      }
+    ]
+  }; // Sample data message to render graph outside of VA for debugging
+
+  // Dynamic data variables
+  let VA_MESSAGE; // Result name required to send messages back to VA
+  let VA_RESULT_NAME; // Result name required to send messages back to VA
+  let CENTERED; // Boolean indicating whether graph should be rendered in centered mode
+  let METADATA; // Metadata to be parsed from VA data message
+  let DATA; // Data to be parsed from VA data message
+  let CENTER_GUIDES; // Pixel location guides to assist in rendering centered bars
+  let MAX_CENTERED; // Sum of the maximum values for each category
+  let MAX_LEFT; // Sum of values for the longest row
+  let MAXIMUMS; // Maximum values by country
+
+  // Static dimension variables
+  const TRANS_TIME = 500; // Duration of transitions
+  const VERT_PAD = 5; // Vertical padding between elements
+  const Y_AXIS_PAD = 2; // Padding between y-axis and chart area (prevent bar stroke overlapping axis)
+  const X_TICK_PAD = 10; // Padding between x tick labels to help space them out
+
+  // Dynamic dimension variables
+  let WIDTH; // Width of SVG element
+  let HEIGHT; // Height of SVG element
+  let CHART_WIDTH; // Width of chart area for bars
+  let CHART_HEIGHT; // Height of chart area for bars
+  let Y_AXIS_WIDTH; // Width of y-axis
+  let X_AXIS_HEIGHT; // Height of x-axis
+  let X_LABEL_HEIGHT; // Height of x-axis label
+  let Y_LABEL_HEIGHT; // Height of y-axis label
+  let Y_TICK_HEIGHT; // Height of individual y-axis tick
+  let X_TICK_MAX_WIDTH = 10; // Maximum width alocated to individual x-axis tick
+
+  // Selection and d3 variables
+  let SVG; // SVG selection
+  let X_SCALE; // Linear scale for bar widths
+  let Y_SCALE; // Band scale for year variable
+  let X_LABEL; // X label data-join
+  let Y_LABEL; // Y label data-join
+  let X_AXIS; // X axis group data-join
+  let Y_AXIS; // Y axis group data join
+  let G_CHART_AREA; // Chart area group selection
+  let YEAR_GROUPS; // Year groups data-join
+  let DATA_BARS; // Data bars data-join
+
+  // Legend variables
+  const LEG = {
+    topPad: 20, // Padding between chart and legend title
+    titlePad: 5, // Padding between legend title bottom and first row of legend
+    rowPad: 3, // Padding between legend rows
+    rectWidth: 12, // Width of legend rects
+    rectPad: 5, // Padding between legend rect and legend text
+    textPad: 5, // Padding after legend text
+    title: undefined, // Title of legend
+    data: undefined, // Array of strings for legend entries
+    elPos: undefined, // Positions of legend text elements
+    height: undefined, // Height allocated for legend,
+    groupSelection: undefined, // Legend group selection
+    titleDataJoin: undefined, // Legend title data-join
+    rectsDataJoin: undefined, // Legend rects data-join
+    textsDataJoin: undefined // Legend texts data-join
+  };
+
+  // Tooltip variables
+  const TIP = {
+    self: undefined, // Tooltip object
+    dir: "n" // Tooltip direction
+  };
+
+  // Gradient variables
+  const GRAD = {
+    fill: {
+      Andorra: "#21b9b7",
+      Belgium: "#4141e0",
+      Mexico: "#7db71a",
+      Syria: "#8e2f8a",
+      "United Arab Emirates": "#d38506",
+      "United Kingdom": "#0abf85",
+      "United States": "#2f90ec",
+      Zimbabwe: "#db3851"
+    }, // Fill colors by key
+    stroke: {
+      Andorra: "#1d9992",
+      Belgium: "#2222bc",
+      Mexico: "#6a9617",
+      Syria: "#6d256d",
+      "United Arab Emirates": "#ba7006",
+      "United Kingdom": "#0a9e69",
+      "United States": "#07689e",
+      Zimbabwe: "#a50a2f"
+    }, // Stroke colors by key
+    fillScale: d3.scaleOrdinal([
+      "#21b9b7",
+      "#4141e0",
+      "#7db71a",
+      "#8e2f8a",
+      "#d38506",
+      "#0abf85",
+      "#2f90ec",
+      "#db3851",
+      "#61F9F7",
+      "#8181FF",
+      "#BDF75A",
+      "#CE6FCA",
+      "#FFC546",
+      "#4AFFC5",
+      "#6FD0FF",
+      "#FF7891",
+      "#007977",
+      "#0101A0",
+      "#3D7700",
+      "#4E004A",
+      "#934500",
+      "#007F45",
+      "#0050AC",
+      "#9B0011"
+    ]), // Backup ordinal scale for fills
+    strokeScale: d3.scaleOrdinal([
+      "#1d9992",
+      "#2222bc",
+      "#6a9617",
+      "#6d256d",
+      "#ba7006",
+      "#0a9e69",
+      "#07689e",
+      "#a50a2f",
+      "#5DD9D2",
+      "#6262FC",
+      "#AAD657",
+      "#AD65AD",
+      "#FAB046",
+      "#4ADEA9",
+      "#47A8DE",
+      "#E54A6F",
+      "#005952",
+      "#00007C",
+      "#2A5600",
+      "#2D002D",
+      "#7A3000",
+      "#005E29",
+      "#00285E",
+      "#650000"
+    ]), // Backup ordinal scale for strokes
+    data: undefined, // Array of keys and ids used to create gradients
+    defsSelection: undefined, // Defs selections
+    gradsDataJoin: undefined // Gradients data join
+  };
+
+  /*************************************************** Setup Callback Functions ***************************************************/
+
+  // Attach event for data message from VA
+  va.messagingUtil.setOnDataReceivedCallback(onDataReceived);
+
+  // If not being rendered in iFrame (outside VA), render with sample data
+  if (!inIframe()) {
+    onDataReceived(SAMPLE_MESSAGE);
+  }
+
+  // Listen for resize event
+  va.contentUtil.setupResizeListener(drawElements);
+
+  /****************************************************** Callback Functions ******************************************************/
+
+  // Take action on received data
+  function onDataReceived(messageFromVA) {
+    // Initialize data variables
+    VA_MESSAGE = messageFromVA;
+    VA_RESULT_NAME = messageFromVA.resultName;
+
+    // Validate data roles
+    if (
+      !va.contentUtil.validateRoles(messageFromVA, [
+        "string",
+        "string",
+        "number",
+        "string",
+        "number"
+      ])
+    ) {
+      va.messagingUtil.postInstructionalMessage(
+        VA_RESULT_NAME,
+        "D3 Variable View Stacked Bar Chart expects columns to be assigned in this order:\n" +
+          " 1. Y Category (string)\n" +
+          " 2. Group By Category (string)\n" +
+          " 3. Measure (number)\n" +
+          " 4. View (string)\n" +
+          " 5. View Selection (from linked selection) (number)"
+      );
+      return;
+    }
+
+    // Determine whether or not data should be centered based on selection
+    CENTERED =
+      (VA_MESSAGE.data[0][3] == "Center Aligned" &&
+        VA_MESSAGE.data[0][4] == 1) ||
+      (VA_MESSAGE.data[0][3] == "Left Aligned" && VA_MESSAGE.data[0][4] == 0);
+
+    // Restructure metadata from data message
+    METADATA = {
+      year: VA_MESSAGE.columns[0].label,
+      category: VA_MESSAGE.columns[1].label,
+      measure: VA_MESSAGE.columns[2].label
+    };
+
+    // Restructure data from 2d array format into associative array format
+    DATA = [];
+    LEG.data = {};
+    MAX_LEFT = 0;
+    let year, category, measure, datum, cumMeasure;
+    for (let i = 0, length = VA_MESSAGE.data.length; i < length; i++) {
+      year = parseInt(VA_MESSAGE.data[i][0]);
+      category = VA_MESSAGE.data[i][1];
+      measure = VA_MESSAGE.data[i][2];
+
+      if (i == 0 || year != parseInt(VA_MESSAGE.data[i - 1][0])) {
+        cumMeasure = 0;
+        datum = {
+          year: year,
+          entries: []
+        };
+      }
+
+      datum.entries.push({
+        year: year,
+        category: category,
+        categoryId: "id-" + category.replace(/[\W]/g, "_"),
+        measure: measure,
+        cumMeasure: cumMeasure
+      });
+
+      cumMeasure += measure;
+      MAX_LEFT = Math.max(cumMeasure, MAX_LEFT);
+
+      if (!LEG.data[category]) {
+        LEG.data[category] = {
+          key: category,
+          id: "id-" + category.replace(/[\W]/g, "_")
+        };
+      }
+
+      if (i == length - 1 || year != parseInt(VA_MESSAGE.data[i + 1][0])) {
+        DATA.push(datum);
+      }
+    }
+
+    // Get maximum measure for each country
+    let entry;
+    MAXIMUMS = {};
+    for (let i = 0; i < DATA.length; i++) {
+      for (let j = 0; j < DATA[i].entries.length; j++) {
+        entry = DATA[i].entries[j];
+        if (
+          MAXIMUMS[entry.category] == null ||
+          MAXIMUMS[entry.category] < entry.measure
+        ) {
+          MAXIMUMS[entry.category] = entry.measure;
+        }
+      }
+    }
+
+    // Sort alphabetically to keep centered columns in same order as legend
+    MAXIMUMS = sortObject(MAXIMUMS);
+
+    // Sum maximums to determine domain of x scale
+    MAX_CENTERED = 0;
+    for (const country in MAXIMUMS) {
+      MAX_CENTERED += MAXIMUMS[country];
+    }
+
+    // Assign data variables for legend
+    LEG.title = METADATA.category;
+    LEG.data = Object.values(LEG.data).sort(function (a, b) {
+      return a.key > b.key ? 1 : -1;
+    });
+
+    // Assign data variable for gradients
+    GRAD.data = LEG.data;
+
+    // Initialize chart if first draw, otherwise process data and update elements accordingly
+    if (d3.select("#" + SVG_ID).empty()) {
+      drawElements();
+    } else {
+      updateElements();
+    }
+  }
+
+  // Draw elements for first time and on resize event
+  function drawElements() {
+    // Return if data is not yet initialized
+    if (!DATA) {
+      return;
+    }
+
+    // Calculate dimensions for graph based on container dimensions
+    WIDTH = document.body.clientWidth;
+    HEIGHT = document.body.clientHeight;
+
+    // Append svg and save reference
+    d3.select("body")
+      .selectAll("#" + SVG_ID)
+      .data([DATA])
+      .enter()
+      .append("svg")
+      .attr("id", SVG_ID)
+      .each(function() {
+        // Initialize tooltip
+        TIP.self = d3
+          .tip()
+          .attr("class", "d3-tip")
+          .offset([-8, 0])
+          .html(function(d) {
+            return (
+              "<table class='d3-tip-content'> <tr> <td> " +
+              METADATA.year +
+              ":\t</td> <td>" +
+              d.year +
+              "</td> </tr>" +
+              "<tr> <td> " +
+              METADATA.category +
+              ":\t</td> <td>" +
+              d.category +
+              "<tr> <td> " +
+              METADATA.measure +
+              ":\t</td> <td>" +
+              d.measure +
+              "</td> </tr> </table>"
+            );
+          });
+
+        d3.select(this).call(TIP.self);
+      });
+
+    SVG = d3.select("#" + SVG_ID);
+
+    // Append defs and save reference
+    SVG.selectAll(".gradient-defs")
+      .data([DATA])
+      .enter()
+      .append("defs")
+      .classed("gradient-defs", true);
+
+    GRAD.defsSelection = SVG.select(".gradient-defs");
+
+    // Create gradient definitions
+    defineGradients();
+
+    // Compute the x y locations for legend elements
+    calculateLegendDimensions();
+
+    // Draw legend elements
+    drawLegend();
+
+    // Use fake scales to determine axes dimensions
+    calculateAxesDimensions();
+
+    // Create x axis label
+    X_LABEL = SVG.selectAll(".x-label").data([DATA]);
+
+    X_LABEL.enter()
+      .append("text")
+      .classed("x-label", true)
+      .text(METADATA.measure)
+      .each(function() {
+        X_LABEL_HEIGHT = this.getBBox().height;
+      })
+      .merge(X_LABEL)
+      .attr("x", WIDTH / 2)
+      .attr("y", HEIGHT - LEG.height - VERT_PAD);
+
+    // Create y axis label
+    Y_LABEL = SVG.selectAll(".y-label").data([DATA]);
+
+    Y_LABEL.enter()
+      .append("text")
+      .classed("y-label", true)
+      .text(METADATA.year)
+      .each(function() {
+        Y_LABEL_HEIGHT = this.getBBox().height;
+      });
+
+    // Init scales with dynamic dimensions
+    createDynamicScales();
+
+    // Create x axis
+    X_AXIS = SVG.selectAll(".x-axis").data([DATA]);
+
+    X_AXIS.enter()
+      .append("g")
+      .classed("x-axis", true)
+      .merge(X_AXIS)
+      .attr(
+        "transform",
+        "translate(" +
+          Y_AXIS_WIDTH +
+          "," +
+          (Y_LABEL_HEIGHT + VERT_PAD + CHART_HEIGHT) +
+          ")"
+      )
+      .call(
+        d3
+          .axisBottom(X_SCALE)
+          .tickValues(
+            getTickValues(
+              0,
+              CENTERED ? MAX_CENTERED : MAX_LEFT,
+              parseInt(CHART_WIDTH / X_TICK_MAX_WIDTH),
+              50
+            )
+          )
+          .tickSizeOuter(0)
+      );
+
+    // Create y axis
+    Y_AXIS = SVG.selectAll(".y-axis").data([DATA]);
+
+    Y_AXIS.enter()
+      .append("g")
+      .classed("y-axis", true)
+      .attr(
+        "transform",
+        "translate(" + Y_AXIS_WIDTH + "," + (Y_LABEL_HEIGHT + VERT_PAD) + ")"
+      )
+      .merge(Y_AXIS)
+      .call(
+        d3
+          .axisLeft(Y_SCALE)
+          .tickValues(
+            getTickValues(
+              d3.min(DATA, function(d) {
+                return d.year;
+              }),
+              d3.max(DATA, function(d) {
+                return d.year;
+              }) + 1,
+              parseInt(CHART_HEIGHT / Y_TICK_HEIGHT),
+              1
+            )
+          )
+          .tickFormat(d3.format("d"))
+          .tickSizeOuter(0)
+      );
+
+    // Append G_CHART_AREA and save references
+    SVG.selectAll(".g-chart-area")
+      .data([DATA])
+      .enter()
+      .append("g")
+      .classed("g-chart-area", true);
+
+    G_CHART_AREA = SVG.select(".g-chart-area").attr(
+      "transform",
+      "translate(" +
+        (Y_AXIS_WIDTH + Y_AXIS_PAD) +
+        "," +
+        (Y_LABEL_HEIGHT + VERT_PAD) +
+        ")"
+    );
+
+    // Create bar groups and bars for each category + year
+    YEAR_GROUPS = G_CHART_AREA.selectAll(".g-year").data(DATA, function(d) {
+      return d.year;
+    });
+
+    YEAR_GROUPS.enter()
+      .append("g")
+      .classed("g-year", true)
+      .attr("id", function(d) {
+        return "g-year-" + d.year;
+      })
+      .merge(YEAR_GROUPS)
+      .each(function(d) {
+        DATA_BARS = d3
+          .select(this)
+          .selectAll(".data-bar")
+          .data(d.entries, function(d) {
+            return d.categoryId;
+          });
+
+        DATA_BARS.enter()
+          .append("rect")
+          .attr("class", function(d) {
+            return d.categoryId;
+          })
+          .classed("data-bar", true)
+          .attr("fill", function(d) {
+            return "url(#" + d.categoryId + "-gradient)";
+          })
+          .attr("stroke", function(d) {
+            return GRAD.stroke[d.category]
+              ? GRAD.stroke[d.category]
+              : GRAD.strokeScale(d.category);
+          })
+          .attr("stroke-width", "1")
+          .on("mouseover", function(d) {
+            // Assign direction and show tooltip
+            TIP.self
+              .direction("n")
+              .offset([-8, 0])
+              .show(d, this)
+              .direction(getTipDirection())
+              .offset(getTipOffset())
+              .show(d, this);
+          })
+          .on("mouseout", TIP.self.hide)
+          .merge(DATA_BARS)
+          .attr("x", function(d) {
+            return CENTERED
+              ? CENTER_GUIDES[d.category].middle - X_SCALE(d.measure / 2)
+              : X_SCALE(d.cumMeasure);
+          })
+          .attr("y", function(d) {
+            return Y_SCALE(d.year);
+          })
+          .attr("width", function(d) {
+            return X_SCALE(d.measure);
+          })
+          .attr("height", function() {
+            return Y_SCALE.bandwidth();
+          });
+      });
+  }
+
+  // Redraw data dependent elements on data change
+  function updateElements() {
+    // Create gradient definitions
+    defineGradients();
+
+    // Compute the x y locations for legend elements
+    calculateLegendDimensions();
+
+    // Update legend elements
+    updateLegend();
+
+    // Use fake scales to determine axes dimensions
+    calculateAxesDimensions();
+
+    // Move x-label
+    SVG.selectAll(".x-label")
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("y", HEIGHT - LEG.height - VERT_PAD);
+
+    // Call helper function to init scales with dynamic dimensions
+    createDynamicScales();
+
+    // Update x axis
+    SVG.selectAll(".x-axis")
+      .transition()
+      .duration(TRANS_TIME)
+      .attr(
+        "transform",
+        "translate(" +
+          Y_AXIS_WIDTH +
+          "," +
+          (Y_LABEL_HEIGHT + VERT_PAD + CHART_HEIGHT) +
+          ")"
+      )
+      .call(
+        d3
+          .axisBottom(X_SCALE)
+          .tickValues(
+            getTickValues(
+              0,
+              CENTERED ? MAX_CENTERED : MAX_LEFT,
+              parseInt(CHART_WIDTH / X_TICK_MAX_WIDTH),
+              50
+            )
+          )
+          .tickSizeOuter(0)
+      );
+
+    // Update y axis
+    SVG.selectAll(".y-axis")
+      .transition()
+      .duration(TRANS_TIME)
+      .call(
+        d3
+          .axisLeft(Y_SCALE)
+          .tickValues(
+            getTickValues(
+              d3.min(DATA, function(d) {
+                return d.year;
+              }),
+              d3.max(DATA, function(d) {
+                return d.year;
+              }) + 1,
+              parseInt(CHART_HEIGHT / Y_TICK_HEIGHT),
+              1
+            )
+          )
+          .tickFormat(d3.format("d"))
+          .tickSizeOuter(0)
+      );
+
+    // Update data bars
+    YEAR_GROUPS = G_CHART_AREA.selectAll(".g-year").data(DATA, function(d) {
+      return d.year;
+    });
+
+    YEAR_GROUPS.each(function(d) {
+      DATA_BARS = d3
+        .select(this)
+        .selectAll(".data-bar")
+        .data(d.entries, function(d) {
+          return d.category;
+        });
+
+      DATA_BARS.classed("exiting", false)
+        .transition()
+        .duration(TRANS_TIME)
+        .attr("stroke-width", 1)
+        .attr("x", function(d) {
+          return CENTERED
+            ? CENTER_GUIDES[d.category].middle - X_SCALE(d.measure / 2)
+            : X_SCALE(d.cumMeasure);
+        })
+        .attr("y", function(d) {
+          return Y_SCALE(d.year);
+        })
+        .attr("width", function(d) {
+          return X_SCALE(d.measure);
+        })
+        .attr("height", function() {
+          return Y_SCALE.bandwidth();
+        });
+
+      DATA_BARS.enter()
+        .append("rect")
+        .attr("class", function(d) {
+          return d.categoryId;
+        })
+        .classed("data-bar", true)
+        .attr("x", function() {
+          // Get previous element
+          const prev = getNeighborElement(this, "previousElementSibling");
+
+          if (!prev) {
+            // Return 0 if no previous element
+            return 0;
+          } else {
+            // Otherwise, use stored data to determine return
+            const prevD = d3.select(prev).datum();
+
+            if (CENTERED) {
+              // Iterate to find max from previous category, then return right edge of max
+              const prevArr = d3.selectAll("." + prevD.categoryId).nodes();
+              let max = prevArr[0];
+
+              for (let i = 1; i < prevArr.length; i++) {
+                if (prevArr[i].width.baseVal.value > max.width.baseVal.value) {
+                  max = prevArr[i];
+                }
+              }
+
+              return max.x.animVal.value + max.width.animVal.value;
+            } else {
+              // Return right edge position of previous
+              return prev.x.animVal.value + prev.width.animVal.value;
+            }
+          }
+        })
+        .attr("y", function() {
+          // Get y value for neighboring data-bar
+          const neighbor = getNeighborElement(this);
+
+          return neighbor.y.animVal.value;
+        })
+        .attr("width", 0)
+        .attr("height", function() {
+          // Get height value for neighboring data-bar
+          const neighbor = getNeighborElement(this);
+
+          return neighbor.height.animVal.value;
+        })
+        .attr("fill", function(d) {
+          return "url(#" + d.categoryId + "-gradient)";
+        })
+        .attr("stroke", function(d) {
+          return GRAD.stroke[d.category]
+            ? GRAD.stroke[d.category]
+            : GRAD.strokeScale(d.category);
+        })
+        .attr("stroke-width", 0)
+        .on("mouseover", function(d) {
+          // Assign direction and show tooltip
+          TIP.self
+            .direction("n")
+            .offset([-8, 0])
+            .show(d, this)
+            .direction(getTipDirection())
+            .offset(getTipOffset())
+            .show(d, this);
+        })
+        .on("mouseout", TIP.self.hide)
+        .transition()
+        .duration(TRANS_TIME)
+        .attr("stroke-width", 1)
+        .attr("x", function(d) {
+          return CENTERED
+            ? CENTER_GUIDES[d.category].middle - X_SCALE(d.measure / 2)
+            : X_SCALE(d.cumMeasure);
+        })
+        .attr("y", function(d) {
+          return Y_SCALE(d.year);
+        })
+        .attr("width", function(d) {
+          return X_SCALE(d.measure);
+        })
+        .attr("height", function() {
+          return Y_SCALE.bandwidth();
+        });
+
+      DATA_BARS.exit()
+        .classed("exiting", true)
+        .transition()
+        .duration(TRANS_TIME)
+        .attr("stroke-width", 0)
+        .attr("x", function(d) {
+          // Get previous non-exiting element
+          const prev = getNeighborElement(
+            this,
+            "previousElementSibling",
+            function(node) {
+              return node.classList.contains("exiting");
+            }
+          );
+
+          if (!prev) {
+            // Return 0 if no previous element
+            return 0;
+          } else {
+            // Otherwise, use stored data to determine return
+            const prevD = d3.select(prev).datum();
+            return prevD.year != d.year
+              ? 0
+              : CENTERED
+              ? CENTER_GUIDES[prevD.category].right
+              : X_SCALE(prevD.cumMeasure + prevD.measure);
+          }
+        })
+        .attr("y", function(d) {
+          return Y_SCALE(d.year);
+        })
+        .attr("width", 0)
+        .attr("height", function() {
+          return Y_SCALE.bandwidth();
+        })
+        .remove();
+    });
+  }
+
+  /******************************************************* Helper Functions *******************************************************/
+
+  // Determine whether or not page is being rendered in iFrame
+  function inIframe() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  // Determine coordinates for dynamic legend
+  function calculateLegendDimensions() {
+    // Create dummy text variable to get legend title height
+    let titleHeight;
+    SVG.append("text")
+      .classed("legend-text", true)
+      .text("TEST")
+      .each(function() {
+        titleHeight = this.getBBox().height;
+        this.remove();
+      });
+
+    // Create dummy text variables to get legend text height/widths
+    const textWidths = [];
+    let textHeight;
+    SVG.selectAll(".dummyText")
+      .data(LEG.data)
+      .enter()
+      .append("text")
+      .classed("legend-text", true)
+      .text(function(d) {
+        return d.key;
+      })
+      .each(function() {
+        textHeight = this.getBBox().height;
+        textWidths.push(this.getComputedTextLength());
+        this.remove();
+      });
+
+    // Determine which row each element will sit in and how long each row is
+    const rows = [];
+    const rowSums = [];
+    let rowSum;
+    let row = 0;
+    for (let i = 0; i < textWidths.length; i++) {
+      rowSum = textWidths[i] + LEG.rectWidth + LEG.rectPad + LEG.textPad;
+      rows.push(row);
+      while (
+        rowSum +
+          textWidths[i + 1] +
+          LEG.rectWidth +
+          LEG.rectPad +
+          LEG.textPad <=
+          WIDTH &&
+        i + 1 < textWidths.length
+      ) {
+        i++;
+        rowSum += textWidths[i] + LEG.rectWidth + LEG.rectPad + LEG.textPad;
+        rows.push(row);
+      }
+      rowSums.push(rowSum);
+      row++;
+    }
+
+    // Calculate x and y coordinates for legend elements
+    LEG.elPos = [];
+    for (let i = 0; i < textWidths.length; i++) {
+      LEG.elPos.push({
+        x:
+          i == 0 || rows[i - 1] != rows[i]
+            ? WIDTH / 2 - rowSums[rows[i]] / 2
+            : LEG.elPos[i - 1].x +
+              textWidths[i - 1] +
+              LEG.rectWidth +
+              LEG.rectPad +
+              LEG.textPad,
+        y: titleHeight + LEG.titlePad + rows[i] * (textHeight + LEG.rowPad)
+      });
+    }
+
+    // Set legend height
+    LEG.height = LEG.elPos[LEG.elPos.length - 1].y + textHeight + LEG.rowPad;
+  }
+
+  // Draw legend elements using provided data
+  function drawLegend() {
+    // Append/update legend group and save reference
+    SVG.selectAll(".g-legend")
+      .data([LEG.title])
+      .enter()
+      .append("g")
+      .classed("g-legend", true);
+
+    LEG.groupSelection = SVG.select(".g-legend");
+
+    // Create legend title
+    LEG.titleDataJoin = LEG.groupSelection
+      .selectAll(".legend-title")
+      .data([LEG.title]);
+
+    LEG.titleDataJoin
+      .enter()
+      .append("text")
+      .classed("legend-title", true)
+      .text(function(d) {
+        return d;
+      })
+      .merge(LEG.titleDataJoin)
+      .attr("transform", "translate(" + WIDTH / 2 + ", 0)");
+
+    // Create legend rects
+    LEG.rectsDataJoin = LEG.groupSelection
+      .selectAll(".legend-rect")
+      .data(LEG.data, function(d) {
+        return d.id;
+      });
+
+    LEG.rectsDataJoin
+      .enter()
+      .append("rect")
+      .classed("legend-rect", true)
+      .attr("width", LEG.rectWidth)
+      .attr("height", LEG.rectWidth)
+      .attr("fill", function(d) {
+        return "url(#" + d.id + "-gradient)";
+      })
+      .attr("stroke", function(d) {
+        return GRAD.stroke[d.key]
+          ? GRAD.stroke[d.key]
+          : GRAD.strokeScale(d.key);
+      })
+      .merge(LEG.rectsDataJoin)
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y;
+      });
+
+    // Create legend text
+    LEG.textsDataJoin = LEG.groupSelection
+      .selectAll(".legend-text")
+      .data(LEG.data, function(d) {
+        return d.id;
+      });
+
+    LEG.textsDataJoin
+      .enter()
+      .append("text")
+      .classed("legend-text", true)
+      .text(function(d) {
+        return d.key;
+      })
+      .merge(LEG.textsDataJoin)
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x + LEG.rectWidth + LEG.rectPad;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y + LEG.rectWidth / 2;
+      });
+
+    // Position legend
+    LEG.groupSelection.attr("transform", function() {
+      return "translate(0, " + (HEIGHT - LEG.height) + ")";
+    });
+  }
+
+  // Update legend on data change
+  function updateLegend() {
+    // Update legend rects
+    LEG.rectsDataJoin = LEG.groupSelection
+      .selectAll(".legend-rect")
+      .data(LEG.data, function(d) {
+        return d.id;
+      });
+
+    LEG.rectsDataJoin
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y;
+      })
+      .style("opacity", 1);
+
+    LEG.rectsDataJoin
+      .enter()
+      .append("rect")
+      .classed("legend-rect", true)
+      .attr("width", LEG.rectWidth)
+      .attr("height", LEG.rectWidth)
+      .attr("fill", function(d) {
+        return "url(#" + d.id + "-gradient)";
+      })
+      .attr("stroke", function(d) {
+        return GRAD.stroke[d.key]
+          ? GRAD.stroke[d.key]
+          : GRAD.strokeScale(d.key);
+      })
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y;
+      })
+      .style("opacity", 0)
+      .transition()
+      .duration(TRANS_TIME)
+      .style("opacity", 1);
+
+    LEG.rectsDataJoin
+      .exit()
+      .transition()
+      .duration(TRANS_TIME)
+      .style("opacity", 0)
+      .remove();
+
+    // Update legend text
+    LEG.textsDataJoin = LEG.groupSelection
+      .selectAll(".legend-text")
+      .data(LEG.data, function(d) {
+        return d.id;
+      });
+
+    LEG.textsDataJoin
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x + LEG.rectWidth + LEG.rectPad;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y + LEG.rectWidth / 2;
+      })
+      .style("opacity", 1);
+
+    LEG.textsDataJoin
+      .enter()
+      .append("text")
+      .classed("legend-text", true)
+      .text(function(d) {
+        return d.key;
+      })
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x + LEG.rectWidth + LEG.rectPad;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y + LEG.rectWidth / 2;
+      })
+      .style("opacity", 0)
+      .transition()
+      .duration(TRANS_TIME)
+      .style("opacity", 1);
+
+    LEG.textsDataJoin
+      .exit()
+      .transition()
+      .duration(TRANS_TIME)
+      .style("opacity", 0)
+      .remove();
+
+    // Update legend position
+    LEG.groupSelection
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("transform", function() {
+        return "translate(0, " + (HEIGHT - LEG.height) + ")";
+      });
+  }
+
+  // Determine direction for tooltip
+  function getTipDirection() {
+    const tip = d3.select(".d3-tip").node();
+    const w = tip.clientWidth;
+    const left = tip.offsetLeft;
+    const top = tip.offsetTop;
+    let dir;
+
+    dir = top < 0 ? "s" : "n";
+
+    if (left < 0) {
+      dir += "e";
+    } else if (left + w > WIDTH) {
+      dir += "w";
+    }
+    TIP.dir = dir;
+    return dir;
+  }
+
+  // Determine offset for tooltip based on direction
+  function getTipOffset() {
+    let offset;
+
+    switch (TIP.dir) {
+      case "n":
+        offset = [-8, 0];
+        break;
+      case "ne":
+        offset = [-5, 0];
+        break;
+      case "nw":
+        offset = [-5, 0];
+        break;
+      case "s":
+        offset = [8, 0];
+        break;
+      case "se":
+        offset = [5, 0];
+        break;
+      case "sw":
+        offset = [5, 0];
+        break;
+    }
+
+    return offset;
+  }
+
+  // Create/update gradient definitions
+  function defineGradients() {
+    GRAD.gradsDataJoin = GRAD.defsSelection
+      .selectAll(".gradient")
+      .data(GRAD.data, function(d) {
+        return d.id;
+      });
+
+    GRAD.gradsDataJoin
+      .enter()
+      .append("linearGradient")
+      .classed("gradient", true)
+      .attr("id", function(d) {
+        return d.id + "-gradient";
+      })
+      .attr("x1", "0%")
+      .attr("x2", "100%")
+      .attr("y1", "50%")
+      .attr("y2", "50%")
+      .each(function(d) {
+        // Append color stops
+        d3.select(this)
+          .append("stop")
+          .attr("class", "start")
+          .attr("offset", "0%")
+          .attr("stop-color", function() {
+            return GRAD.fill[d.key] ? GRAD.fill[d.key] : GRAD.fillScale(d.key);
+          })
+          .attr("stop-opacity", 1);
+
+        d3.select(this)
+          .append("stop")
+          .attr("class", "end")
+          .attr("offset", "100%")
+          .attr("stop-color", function() {
+            return GRAD.fill[d.key] ? GRAD.fill[d.key] : GRAD.fillScale(d.key);
+          })
+          .attr("stop-opacity", 0.7);
+      });
+  }
+
+  // Get neighbor (previous or next) element
+  function getNeighborElement(el, direction, condition) {
+    if (direction) {
+      // If direction given, select element in given direction
+      // Select first neighbor in given direction
+      let neighbor = el[direction];
+
+      // If condition passed, iterate until condition false
+      if (condition) {
+        while (neighbor && condition(neighbor)) {
+          neighbor = neighbor[direction];
+        }
+      }
+
+      return neighbor;
+    } else {
+      // Otherwise try previous, else next
+      return getNeighborElement(el, "previousElementSibling", condition)
+        ? getNeighborElement(el, "previousElementSibling", condition)
+        : getNeighborElement(el, "nextElementSibling", condition);
+    }
+  }
+
+  // Use fake scales to determine axes dimensions
+  function calculateAxesDimensions() {
+    // Initialize scales with fake ranges
+    X_SCALE = d3
+      .scaleLinear()
+      .domain([0, CENTERED ? MAX_CENTERED : MAX_LEFT])
+      .rangeRound([0, 10]);
+
+    Y_SCALE = d3
+      .scaleBand()
+      .padding(0.05)
+      .domain(
+        d3.range(
+          d3.min(DATA, function(d) {
+            return d.year;
+          }),
+          d3.max(DATA, function(d) {
+            return d.year;
+          }) + 1,
+          1
+        )
+      )
+      .rangeRound([0, 10]);
+
+    // Use dummy axes with fake scales to obtain dimensions
+    SVG.append("g")
+      .classed("y-axis", true)
+      .call(
+        d3
+          .axisLeft(Y_SCALE)
+          .tickValues(
+            d3
+              .map(DATA, function(d) {
+                return d.year;
+              })
+              .keys()
+          )
+          .tickFormat(d3.format("d"))
+          .tickSizeOuter(0)
+      )
+      .each(function() {
+        Y_TICK_HEIGHT = d3
+          .select(this)
+          .select("text")
+          .node()
+          .getBBox().height;
+        Y_AXIS_WIDTH = this.getBBox().width;
+        this.remove();
+      });
+
+    SVG.append("g")
+      .classed("x-axis", true)
+      .call(d3.axisBottom(X_SCALE).tickSizeOuter(0))
+      .each(function() {
+        d3.select(this)
+          .selectAll("text")
+          .each(function() {
+            X_TICK_MAX_WIDTH = Math.max(
+              X_TICK_MAX_WIDTH,
+              this.getComputedTextLength() + 2 * X_TICK_PAD
+            );
+          });
+        X_AXIS_HEIGHT = this.getBBox().height;
+        this.remove();
+      });
+  }
+
+  // Use maximums and chart dimensions to create dynamic scales
+  function createDynamicScales() {
+    // Calculate chart dimensions
+    CHART_WIDTH = WIDTH - Y_AXIS_PAD - Y_AXIS_WIDTH;
+    CHART_HEIGHT =
+      HEIGHT -
+      LEG.height -
+      X_LABEL_HEIGHT -
+      VERT_PAD -
+      X_AXIS_HEIGHT -
+      VERT_PAD -
+      Y_LABEL_HEIGHT;
+
+    // Update scales using new MAX_CENTERED and calculated dimensions
+    X_SCALE = d3
+      .scaleLinear()
+      .domain([0, CENTERED ? MAX_CENTERED : MAX_LEFT])
+      .rangeRound([0, CHART_WIDTH]);
+
+    Y_SCALE = d3
+      .scaleBand()
+      .padding(0.05)
+      .domain(
+        d3.range(
+          d3.min(DATA, function(d) {
+            return d.year;
+          }),
+          d3.max(DATA, function(d) {
+            return d.year;
+          }) + 1,
+          1
+        )
+      )
+      .rangeRound([0, CHART_HEIGHT]);
+
+    // Use country maximums to determine center and right border for centered bars
+    CENTER_GUIDES = {};
+    let runningTotal = 0;
+    for (const country in MAXIMUMS) {
+      CENTER_GUIDES[country] = {
+        middle: X_SCALE(runningTotal + MAXIMUMS[country] / 2),
+        right: X_SCALE(runningTotal + MAXIMUMS[country])
+      };
+      runningTotal += MAXIMUMS[country];
+    }
+  }
+
+  // Compute array of readable tick values between min (inclusive) and max (exclusive) of length less than count
+  function getTickValues(min, max, count, minInterval) {
+    const pattern = [5, 2, 1];
+    let tickValues;
+    let range = max - min;
+    let pow = Math.floor(Math.log10(range));
+    let p = 0;
+    let interval = pattern[p] * Math.pow(10, pow);
+
+    do {
+      tickValues = d3.range(min, max, interval);
+
+      if (p == 2) {
+        p = 0;
+        pow--;
+      } else {
+        p++;
+      }
+
+      interval = pattern[p] * Math.pow(10, pow);
+    } while (d3.range(min, max, interval).length <= count && interval >= minInterval);
+
+    return tickValues;
+  }
+
+  // Return new object with keys sorted alphabetically
+  function sortObject(obj) {
+    let newObj = {};
+
+    Object.keys(obj).sort().forEach(function(d) {
+      newObj[d] = obj[d];
+    });
+
+    return newObj;
+  }
+});
+</script>
+</body>
+</html>

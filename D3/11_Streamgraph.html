@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<!--
+Copyright 2018 SAS Institute Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <!-- Import D3.js -->
+  <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+
+  <!-- Import lodash.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+
+  <!-- Import utilities  -->
+  <script type="text/javascript" src="../../util/messagingUtil.js"></script>
+  <script type="text/javascript" src="../../util/contentUtil.js"></script>
+</head>
+<body>
+<style type="text/css">
+  html, body, svg {
+    float: left;
+    min-width: 500px;
+    min-height: 300px;
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+  }
+
+  text {
+    font-family: Verdana, sans-serif;
+  }
+
+  .x-axis, .x-axis-context, .y-axis {
+    font-size: .8em;
+  }
+
+  .x-label {
+    font-size: .9em;
+    text-anchor: Middle;
+    dominant-baseline: ideographic;
+  }
+
+  .y-label {
+    font-size: .9em;
+    dominant-baseline: hanging;
+  }
+
+  .legend-title {
+    font-size: .9em;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: hanging;
+  }
+
+  .legend-text {
+    font-size: .8em;
+    dominant-baseline: central;
+  }
+
+  .legend-rect {
+    stroke-width: 1;
+  }
+
+  .zoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+  }
+
+  .data-path-context {
+    pointer-events: none;
+  }
+</style>
+
+<script>
+"use strict";
+
+document.addEventListener("DOMContentLoaded", function() {
+  /******************************************************* Declare variables *******************************************************/
+
+  // Static data variables
+  const SVG_ID = "streamgraph"; // ID of SVG element
+  const SAMPLE_MESSAGE = {
+    version: "1",
+    resultName: "dd510",
+    rowCount: 242,
+    availableRowCount: 242,
+    data: [
+      ["01/01/1960", "Andorra", 44],
+      ["01/01/1960", "Belgium", 36],
+      ["02/01/1960", "Andorra", 48],
+      ["02/01/1960", "Belgium", 29],
+      ["03/01/1960", "Andorra", 47],
+      ["03/01/1960", "Belgium", 21],
+      ["04/01/1960", "Andorra", 34],
+      ["04/01/1960", "Belgium", 4],
+      ["05/01/1960", "Andorra", 42],
+      ["05/01/1960", "Belgium", 1],
+      ["06/01/1960", "Andorra", 38],
+      ["06/01/1960", "Belgium", 1],
+      ["07/01/1960", "Andorra", 47],
+      ["07/01/1960", "Belgium", 6],
+      ["08/01/1960", "Andorra", 43],
+      ["08/01/1960", "Belgium", 12],
+      ["09/01/1960", "Andorra", 45],
+      ["09/01/1960", "Belgium", 10],
+      ["10/01/1960", "Andorra", 41],
+      ["10/01/1960", "Belgium", 19],
+      ["11/01/1960", "Andorra", 50],
+      ["11/01/1960", "Belgium", 21],
+      ["12/01/1960", "Andorra", 47],
+      ["12/01/1960", "Belgium", 23],
+      ["01/01/1961", "Andorra", 36],
+      ["01/01/1961", "Belgium", 24],
+      ["02/01/1961", "Andorra", 41],
+      ["02/01/1961", "Belgium", 26],
+      ["03/01/1961", "Andorra", 42],
+      ["03/01/1961", "Belgium", 23],
+      ["04/01/1961", "Andorra", 40],
+      ["04/01/1961", "Belgium", 26],
+      ["05/01/1961", "Andorra", 39],
+      ["05/01/1961", "Belgium", 30],
+      ["06/01/1961", "Andorra", 29],
+      ["06/01/1961", "Belgium", 38],
+      ["07/01/1961", "Andorra", 31],
+      ["07/01/1961", "Belgium", 44],
+      ["08/01/1961", "Andorra", 33],
+      ["08/01/1961", "Belgium", 40],
+      ["09/01/1961", "Andorra", 19],
+      ["09/01/1961", "Belgium", 44],
+      ["10/01/1961", "Andorra", 26],
+      ["10/01/1961", "Belgium", 48],
+      ["11/01/1961", "Andorra", 16],
+      ["11/01/1961", "Belgium", 57],
+      ["12/01/1961", "Andorra", 20],
+      ["12/01/1961", "Belgium", 53],
+      ["01/01/1962", "Andorra", 9],
+      ["01/01/1962", "Belgium", 54],
+      ["02/01/1962", "Andorra", 4],
+      ["02/01/1962", "Belgium", 47],
+      ["03/01/1962", "Andorra", 13],
+      ["03/01/1962", "Belgium", 55],
+      ["04/01/1962", "Andorra", 25],
+      ["04/01/1962", "Belgium", 64],
+      ["05/01/1962", "Andorra", 30],
+      ["05/01/1962", "Belgium", 58],
+      ["06/01/1962", "Andorra", 29],
+      ["06/01/1962", "Belgium", 48],
+      ["07/01/1962", "Andorra", 23],
+      ["07/01/1962", "Belgium", 46],
+      ["08/01/1962", "Andorra", 40],
+      ["08/01/1962", "Belgium", 45],
+      ["09/01/1962", "Andorra", 41],
+      ["09/01/1962", "Belgium", 46],
+      ["10/01/1962", "Andorra", 46],
+      ["10/01/1962", "Belgium", 56],
+      ["11/01/1962", "Andorra", 50],
+      ["11/01/1962", "Belgium", 58],
+      ["12/01/1962", "Andorra", 47],
+      ["12/01/1962", "Belgium", 66],
+      ["01/01/1963", "Andorra", 45],
+      ["01/01/1963", "Belgium", 74],
+      ["02/01/1963", "Andorra", 47],
+      ["02/01/1963", "Belgium", 85],
+      ["03/01/1963", "Andorra", 53],
+      ["03/01/1963", "Belgium", 73],
+      ["04/01/1963", "Andorra", 63],
+      ["04/01/1963", "Belgium", 84],
+      ["05/01/1963", "Andorra", 62],
+      ["05/01/1963", "Belgium", 94],
+      ["06/01/1963", "Andorra", 69],
+      ["06/01/1963", "Belgium", 80],
+      ["07/01/1963", "Andorra", 68],
+      ["07/01/1963", "Belgium", 95],
+      ["08/01/1963", "Andorra", 78],
+      ["08/01/1963", "Belgium", 90],
+      ["09/01/1963", "Andorra", 92],
+      ["09/01/1963", "Belgium", 99],
+      ["10/01/1963", "Andorra", 87],
+      ["10/01/1963", "Belgium", 93],
+      ["11/01/1963", "Andorra", 86],
+      ["11/01/1963", "Belgium", 85],
+      ["12/01/1963", "Andorra", 104],
+      ["12/01/1963", "Belgium", 91],
+      ["01/01/1964", "Andorra", 103],
+      ["01/01/1964", "Belgium", 103],
+      ["02/01/1964", "Andorra", 103],
+      ["02/01/1964", "Belgium", 114],
+      ["03/01/1964", "Andorra", 100],
+      ["03/01/1964", "Belgium", 115],
+      ["04/01/1964", "Andorra", 86],
+      ["04/01/1964", "Belgium", 107],
+      ["05/01/1964", "Andorra", 95],
+      ["05/01/1964", "Belgium", 96],
+      ["06/01/1964", "Andorra", 96],
+      ["06/01/1964", "Belgium", 107],
+      ["07/01/1964", "Andorra", 95],
+      ["07/01/1964", "Belgium", 104],
+      ["08/01/1964", "Andorra", 102],
+      ["08/01/1964", "Belgium", 106],
+      ["09/01/1964", "Andorra", 97],
+      ["09/01/1964", "Belgium", 111],
+      ["10/01/1964", "Andorra", 101],
+      ["10/01/1964", "Belgium", 112],
+      ["11/01/1964", "Andorra", 94],
+      ["11/01/1964", "Belgium", 127],
+      ["12/01/1964", "Andorra", 81],
+      ["12/01/1964", "Belgium", 123],
+      ["01/01/1965", "Andorra", 67],
+      ["01/01/1965", "Belgium", 118],
+      ["02/01/1965", "Andorra", 64],
+      ["02/01/1965", "Belgium", 122],
+      ["03/01/1965", "Andorra", 67],
+      ["03/01/1965", "Belgium", 113],
+      ["04/01/1965", "Andorra", 57],
+      ["04/01/1965", "Belgium", 120],
+      ["05/01/1965", "Andorra", 42],
+      ["05/01/1965", "Belgium", 119],
+      ["06/01/1965", "Andorra", 59],
+      ["06/01/1965", "Belgium", 131],
+      ["07/01/1965", "Andorra", 72],
+      ["07/01/1965", "Belgium", 135],
+      ["08/01/1965", "Andorra", 77],
+      ["08/01/1965", "Belgium", 132],
+      ["09/01/1965", "Andorra", 80],
+      ["09/01/1965", "Belgium", 136],
+      ["10/01/1965", "Andorra", 73],
+      ["10/01/1965", "Belgium", 125],
+      ["11/01/1965", "Andorra", 61],
+      ["11/01/1965", "Belgium", 126],
+      ["12/01/1965", "Andorra", 71],
+      ["12/01/1965", "Belgium", 126],
+      ["01/01/1966", "Andorra", 53],
+      ["01/01/1966", "Belgium", 125],
+      ["02/01/1966", "Andorra", 70],
+      ["02/01/1966", "Belgium", 115],
+      ["03/01/1966", "Andorra", 78],
+      ["03/01/1966", "Belgium", 116],
+      ["04/01/1966", "Andorra", 80],
+      ["04/01/1966", "Belgium", 115],
+      ["05/01/1966", "Andorra", 88],
+      ["05/01/1966", "Belgium", 126],
+      ["06/01/1966", "Andorra", 90],
+      ["06/01/1966", "Belgium", 130],
+      ["07/01/1966", "Andorra", 109],
+      ["07/01/1966", "Belgium", 127],
+      ["08/01/1966", "Andorra", 112],
+      ["08/01/1966", "Belgium", 136],
+      ["09/01/1966", "Andorra", 97],
+      ["09/01/1966", "Belgium", 134],
+      ["10/01/1966", "Andorra", 85],
+      ["10/01/1966", "Belgium", 133],
+      ["11/01/1966", "Andorra", 85],
+      ["11/01/1966", "Belgium", 142],
+      ["12/01/1966", "Andorra", 74],
+      ["12/01/1966", "Belgium", 152],
+      ["01/01/1967", "Andorra", 70],
+      ["01/01/1967", "Belgium", 146],
+      ["02/01/1967", "Andorra", 76],
+      ["02/01/1967", "Belgium", 146],
+      ["03/01/1967", "Andorra", 66],
+      ["03/01/1967", "Belgium", 164],
+      ["04/01/1967", "Andorra", 63],
+      ["04/01/1967", "Belgium", 171],
+      ["05/01/1967", "Andorra", 75],
+      ["05/01/1967", "Belgium", 173],
+      ["06/01/1967", "Andorra", 80],
+      ["06/01/1967", "Belgium", 166],
+      ["07/01/1967", "Andorra", 95],
+      ["07/01/1967", "Belgium", 165],
+      ["08/01/1967", "Andorra", 79],
+      ["08/01/1967", "Belgium", 159],
+      ["09/01/1967", "Andorra", 76],
+      ["09/01/1967", "Belgium", 144],
+      ["10/01/1967", "Andorra", 78],
+      ["10/01/1967", "Belgium", 139],
+      ["11/01/1967", "Andorra", 75],
+      ["11/01/1967", "Belgium", 142],
+      ["12/01/1967", "Andorra", 81],
+      ["12/01/1967", "Belgium", 151],
+      ["01/01/1968", "Andorra", 84],
+      ["01/01/1968", "Belgium", 163],
+      ["02/01/1968", "Andorra", 76],
+      ["02/01/1968", "Belgium", 175],
+      ["03/01/1968", "Andorra", 74],
+      ["03/01/1968", "Belgium", 176],
+      ["04/01/1968", "Andorra", 82],
+      ["04/01/1968", "Belgium", 170],
+      ["05/01/1968", "Andorra", 86],
+      ["05/01/1968", "Belgium", 171],
+      ["06/01/1968", "Andorra", 98],
+      ["06/01/1968", "Belgium", 178],
+      ["07/01/1968", "Andorra", 102],
+      ["07/01/1968", "Belgium", 174],
+      ["08/01/1968", "Andorra", 101],
+      ["08/01/1968", "Belgium", 188],
+      ["09/01/1968", "Andorra", 98],
+      ["09/01/1968", "Belgium", 184],
+      ["10/01/1968", "Andorra", 112],
+      ["10/01/1968", "Belgium", 182],
+      ["11/01/1968", "Andorra", 96],
+      ["11/01/1968", "Belgium", 176],
+      ["12/01/1968", "Andorra", 90],
+      ["12/01/1968", "Belgium", 186],
+      ["01/01/1969", "Andorra", 96],
+      ["01/01/1969", "Belgium", 196],
+      ["02/01/1969", "Andorra", 105],
+      ["02/01/1969", "Belgium", 201],
+      ["03/01/1969", "Andorra", 108],
+      ["03/01/1969", "Belgium", 210],
+      ["04/01/1969", "Andorra", 117],
+      ["04/01/1969", "Belgium", 210],
+      ["05/01/1969", "Andorra", 127],
+      ["05/01/1969", "Belgium", 220],
+      ["06/01/1969", "Andorra", 122],
+      ["06/01/1969", "Belgium", 231],
+      ["07/01/1969", "Andorra", 124],
+      ["07/01/1969", "Belgium", 221],
+      ["08/01/1969", "Andorra", 120],
+      ["08/01/1969", "Belgium", 218],
+      ["09/01/1969", "Andorra", 125],
+      ["09/01/1969", "Belgium", 229],
+      ["10/01/1969", "Andorra", 129],
+      ["10/01/1969", "Belgium", 218],
+      ["11/01/1969", "Andorra", 113],
+      ["11/01/1969", "Belgium", 215],
+      ["12/01/1969", "Andorra", 103],
+      ["12/01/1969", "Belgium", 216],
+      ["01/01/1970", "Andorra", 109],
+      ["01/01/1970", "Belgium", 207]
+    ],
+    columns: [
+      {
+        name: "bi507",
+        label: "Date",
+        type: "date",
+        usage: "categorical",
+        format: {
+          name: "MMDDYY",
+          width: 8,
+          precision: 0,
+          formatString: "MMDDYY8"
+        }
+      },
+      {
+        name: "bi508",
+        label: "Country",
+        type: "string"
+      },
+      {
+        name: "bi511",
+        label: "Population (in millions)",
+        type: "number",
+        usage: "quantitative",
+        aggregation: "sum",
+        format: {
+          name: "BEST",
+          width: 12,
+          precision: 0,
+          formatString: "BEST12."
+        }
+      }
+    ]
+  }; // Sample data message to render graph outside of VA for debugging
+
+  // Dynamic data variables
+  let VA_MESSAGE; // Result name required to send messages back to VA
+  let VA_RESULT_NAME; // Result name required to send messages back to VA
+  let METADATA; // Metadata to be parsed from VA data message
+  let CATEGORIES; // Categories present in DATA
+  let DATA; // Data to be parsed from VA data message
+  let STACK; // Stack generator to create stacked dataset
+  let STACKED_DATA; // Data arranged in stack to create streamgraph
+  let OLD_STACKED_DATA; // Previous data
+  let LAST_TRANSITION_END = Date.now(); // Time of last transition used to time transition callbacks
+
+  // Static dimension variables
+  const TRANS_TIME = 500; // Duration of transitions
+  const VERT_PAD = 5; // Vertical padding between elements
+  const Y_AXIS_PAD = 2; // Padding between y-axis and chart area (prevent bar stroke overlapping axis)
+  const RIGHT_AXIS_PAD = 50; // Padding on right axis to give user space to release brush event
+  const X_TICK_PAD = 10; // Padding between x tick labels to help space them out
+  const CONTEXT_HEIGHT = 75; // Height of context graph at bottom
+
+  // Dynamic dimension variables
+  let WIDTH; // Width of SVG element
+  let HEIGHT; // Height of SVG element
+  let CHART_WIDTH; // Width of chart area for bars
+  let CHART_HEIGHT; // Height of chart area for bars
+  let OLD_CHART_HEIGHT; // Previous chart height
+  let Y_AXIS_WIDTH; // Width of y-axis
+  let X_AXIS_HEIGHT; // Height of x-axis
+  let X_LABEL_HEIGHT; // Height of x-axis label
+  let Y_LABEL_HEIGHT; // Height of y-axis label
+  let Y_TICK_HEIGHT; // Height of y-ticks texts
+  let X_TICK_MAX_WIDTH = 10; // Maximum pixel width allowed for x-tick texts
+
+  // Selection and d3 variables
+  let SVG; // SVG selection
+  let X_SCALE; // Linear time scale for chart area
+  let X_SCALE_CONTEXT; // Linear time scale context area
+  let Y_SCALE; // Linear scale for chart area path heights
+  let OLD_Y_SCALE; // Previous y-scale
+  let Y_SCALE_CONTEXT; // Linear scale for context area path heights
+  let X_LABEL; // X label data-join
+  let Y_LABEL; // Y label data-join
+  let X_AXIS; // X axis group data-join
+  let X_AXIS_CONTEXT; // Context x axis group data-join
+  let Y_AXIS; // Y axis group data join
+  let BRUSH; // Brush data-join
+  let ZOOM; // Zoom data-join
+  let G_CLIP; // Clip group selection - must tether clipPath to absolutely positioned group,
+  // otherwise clipping area will inherit transforms of object it is tethered to
+  let G_CHART_AREA; // Chart area group selection
+  let AREA; // Area generator to create paths from stack
+  let OLD_AREA; // Previous area generator
+  let CLIP_PATH; // Clip path data-join to prevent overflow from zoom/brush
+  let CLIP_PATH_RECT; // Clip path rect data-join
+  let DATA_PATHS; // Data paths data-join
+  let ZOOM_RECT; // Zoom rect data-join
+  let G_CONTEXT_AREA; // Context area group selection
+  let CONTEXT_AREA; // Area generator to create paths from stack for context area
+  let DATA_PATHS_CONTEXT; // Context chart data paths data-join
+  let BRUSH_GROUP; // Brush group selection
+
+  // Legend variables
+  const LEG = {
+    topPad: 20, // Padding between chart and legend title
+    titlePad: 5, // Padding between legend title bottom and first row of legend
+    rowPad: 3, // Padding between legend rows
+    rectWidth: 12, // Width of legend rects
+    rectPad: 5, // Padding between legend rect and legend text
+    textPad: 5, // Padding after legend text
+    title: undefined, // Title of legend
+    data: undefined, // Array of strings for legend entries
+    elPos: undefined, // Positions of legend text elements
+    height: undefined, // Height allocated for legend,
+    groupSelection: undefined, // Legend group selection
+    titleDataJoin: undefined, // Legend title data-join
+    rectsDataJoin: undefined, // Legend rects data-join
+    textsDataJoin: undefined // Legend texts data-join
+  };
+
+  // Gradient variables
+  const GRAD = {
+    fill: {
+      Andorra: "#21b9b7",
+      Belgium: "#4141e0",
+      Mexico: "#7db71a",
+      Syria: "#8e2f8a",
+      "United Arab Emirates": "#d38506",
+      "United Kingdom": "#0abf85",
+      "United States": "#2f90ec",
+      Zimbabwe: "#db3851"
+    }, // Fill colors by key
+    stroke: {
+      Andorra: "#1d9992",
+      Belgium: "#2222bc",
+      Mexico: "#6a9617",
+      Syria: "#6d256d",
+      "United Arab Emirates": "#ba7006",
+      "United Kingdom": "#0a9e69",
+      "United States": "#07689e",
+      Zimbabwe: "#a50a2f"
+    }, // Stroke colors by key
+    fillScale: d3.scaleOrdinal([
+      "#21b9b7",
+      "#4141e0",
+      "#7db71a",
+      "#8e2f8a",
+      "#d38506",
+      "#0abf85",
+      "#2f90ec",
+      "#db3851",
+      "#61F9F7",
+      "#8181FF",
+      "#BDF75A",
+      "#CE6FCA",
+      "#FFC546",
+      "#4AFFC5",
+      "#6FD0FF",
+      "#FF7891",
+      "#007977",
+      "#0101A0",
+      "#3D7700",
+      "#4E004A",
+      "#934500",
+      "#007F45",
+      "#0050AC",
+      "#9B0011"
+    ]), // Backup ordinal scale for fills
+    strokeScale: d3.scaleOrdinal([
+      "#1d9992",
+      "#2222bc",
+      "#6a9617",
+      "#6d256d",
+      "#ba7006",
+      "#0a9e69",
+      "#07689e",
+      "#a50a2f",
+      "#5DD9D2",
+      "#6262FC",
+      "#AAD657",
+      "#AD65AD",
+      "#FAB046",
+      "#4ADEA9",
+      "#47A8DE",
+      "#E54A6F",
+      "#005952",
+      "#00007C",
+      "#2A5600",
+      "#2D002D",
+      "#7A3000",
+      "#005E29",
+      "#00285E",
+      "#650000"
+    ]), // Backup ordinal scale for strokes
+    data: undefined, // Array of keys and ids used to create gradients
+    defsSelection: undefined, // Defs selections
+    gradsDataJoin: undefined // Gradients data join
+  };
+
+  /*************************************************** Setup Callback Functions ***************************************************/
+
+  // Attach event for data message from VA
+  va.messagingUtil.setOnDataReceivedCallback(handleCallback);
+
+  // If not being rendered in iFrame (outside VA), render with sample data
+  if (!inIframe()) {
+    onDataReceived(SAMPLE_MESSAGE);
+  }
+
+  // Listen for resize event
+  va.contentUtil.setupResizeListener(drawElements);
+
+  /****************************************************** Callback Functions ******************************************************/
+
+  // Use timeouts to debounce update events
+  function handleCallback(messageFromVA) {
+    // Prevent duplicate data messages that come from nested filters
+    if (VA_MESSAGE && _.isEqual(messageFromVA, VA_MESSAGE)) {
+      return;
+    }
+
+    if (LAST_TRANSITION_END > Date.now()) {
+      setTimeout(function() {
+        onDataReceived(messageFromVA);
+      }, LAST_TRANSITION_END - Date.now());
+      LAST_TRANSITION_END = LAST_TRANSITION_END + TRANS_TIME + 50;
+    } else {
+      onDataReceived(messageFromVA);
+      LAST_TRANSITION_END = Date.now() + TRANS_TIME + 50;
+    }
+  }
+
+  // Take action on received data
+  function onDataReceived(messageFromVA) {
+    // Initialize data variables
+    va.contentUtil.convertDateColumns(messageFromVA);
+    VA_MESSAGE = messageFromVA;
+    VA_RESULT_NAME = messageFromVA.resultName;
+
+    // Validate data roles
+    if (
+      !va.contentUtil.validateRoles(messageFromVA, ["date", "string", "number"])
+    ) {
+      va.messagingUtil.postInstructionalMessage(
+        VA_RESULT_NAME,
+        "D3 Streamgraph expects columns to be assigned in this order:\n" +
+          " 1. Date (date)\n" +
+          " 2. Group By Category (string)\n" +
+          " 3. Measure (number)"
+      );
+      return;
+    }
+
+    // Restructure metadata from data message
+    METADATA = {
+      date: VA_MESSAGE.columns[0].label,
+      category: VA_MESSAGE.columns[1].label,
+      measure: VA_MESSAGE.columns[2].label
+    };
+
+    // Create nest to help process data structure
+    CATEGORIES = d3
+      .nest()
+      .key(function(d) {
+        return d[1];
+      })
+      .entries(VA_MESSAGE.data);
+
+    // Restructure data from 2d array format into associative array format
+    DATA = [];
+    let k, datum;
+    let i = 0;
+    while (i < VA_MESSAGE.data.length) {
+      k = 0;
+      datum = {
+        total: 0,
+        date: VA_MESSAGE.data[i][0]
+      };
+      for (let j = 0; j < CATEGORIES.length; j++) {
+        // Freq for this date and category present
+        if (VA_MESSAGE.data[i + k][1] == CATEGORIES[j].key) {
+          datum[CATEGORIES[j].key] = VA_MESSAGE.data[i + k][2];
+          datum.total += VA_MESSAGE.data[i + k][2];
+          k++;
+        }
+        // 0 freq for this date and category
+        else {
+          datum[CATEGORIES[j].key] = 0;
+        }
+      }
+
+      i += k;
+      DATA.push(datum);
+    }
+
+    // Create data stack
+    STACK = d3
+      .stack()
+      .keys(
+        CATEGORIES.map(function(d) {
+          return d.key;
+        })
+      )
+      .offset(d3.stackOffsetWiggle);
+
+    OLD_STACKED_DATA = STACKED_DATA;
+    STACKED_DATA = STACK(DATA);
+
+    // Add id to stacked data
+    STACKED_DATA.forEach(function(d) {
+      d.id = "id-" + d.key.replace(/[\W]/g, "_");
+    });
+
+    // Assign data variables for legend
+    LEG.title = METADATA.category;
+    LEG.data = STACKED_DATA.map(function(d) {
+      return {
+        key: d.key,
+        id: d.id
+      };
+    });
+
+    // Assign data variable for gradients
+    GRAD.data = LEG.data;
+
+    // Initialize chart if first draw, otherwise process data and update elements accordingly
+    if (d3.select("#" + SVG_ID).empty()) {
+      drawElements();
+    } else {
+      updateElements();
+    }
+  }
+
+  // Draw elements for first time and on resize event
+  function drawElements() {
+    // Return if data is not yet initialized
+    if (!DATA) {
+      return;
+    }
+
+    // Calculate dimensions for graph based on container dimensions
+    WIDTH = document.body.clientWidth;
+    HEIGHT = document.body.clientHeight;
+
+    // Append svg and save reference
+    d3.select("body")
+      .selectAll("#" + SVG_ID)
+      .data([DATA])
+      .enter()
+      .append("svg")
+      .attr("id", SVG_ID);
+
+    SVG = d3.select("#" + SVG_ID);
+
+    // Append defs and save reference
+    SVG.selectAll(".gradient-defs")
+      .data([DATA])
+      .enter()
+      .append("defs")
+      .classed("gradient-defs", true);
+
+    GRAD.defsSelection = SVG.select(".gradient-defs");
+
+    // Create gradient definitions
+    defineGradients();
+
+    // Use fake scales to determine axes dimensions
+    calculateAxesDimensions();
+
+    // Compute the x y locations for legend elements
+    calculateLegendDimensions();
+
+    // Draw legend elements
+    drawLegend();
+
+    // Create x axis label
+    X_LABEL = SVG.selectAll(".x-label").data([DATA]);
+
+    X_LABEL.enter()
+      .append("text")
+      .classed("x-label", true)
+      .text(METADATA.date)
+      .each(function() {
+        X_LABEL_HEIGHT = this.getBBox().height;
+      })
+      .merge(X_LABEL)
+      .attr("x", WIDTH / 2)
+      .attr("y", HEIGHT - LEG.height - VERT_PAD);
+
+    // Create y axis label
+    Y_LABEL = SVG.selectAll(".y-label").data([DATA]);
+
+    Y_LABEL.enter()
+      .append("text")
+      .classed("y-label", true)
+      .text(METADATA.measure)
+      .each(function() {
+        Y_LABEL_HEIGHT = this.getBBox().height;
+      });
+
+    // Calculate chart dimensions
+    CHART_WIDTH = WIDTH - RIGHT_AXIS_PAD - Y_AXIS_PAD - Y_AXIS_WIDTH;
+    OLD_CHART_HEIGHT = CHART_HEIGHT;
+    CHART_HEIGHT =
+      HEIGHT -
+      LEG.height -
+      X_LABEL_HEIGHT -
+      VERT_PAD -
+      X_AXIS_HEIGHT -
+      CONTEXT_HEIGHT -
+      VERT_PAD -
+      X_AXIS_HEIGHT -
+      VERT_PAD -
+      Y_LABEL_HEIGHT;
+
+    // Initialize scales using chart dimensions
+    X_SCALE = d3
+      .scaleTime()
+      .domain(
+        d3.extent(DATA, function(d) {
+          return d.date;
+        })
+      )
+      .rangeRound([0, CHART_WIDTH]);
+
+    X_SCALE_CONTEXT = d3
+      .scaleTime()
+      .domain(
+        d3.extent(DATA, function(d) {
+          return d.date;
+        })
+      )
+      .rangeRound([0, CHART_WIDTH]);
+
+    Y_SCALE = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(DATA, function(d) {
+          return d.total;
+        })
+      ])
+      .rangeRound([CHART_HEIGHT, 0]);
+
+    Y_SCALE_CONTEXT = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(DATA, function(d) {
+          return d.total;
+        })
+      ])
+      .rangeRound([CONTEXT_HEIGHT, 0]);
+
+    // Create x axis
+    X_AXIS = SVG.selectAll(".x-axis").data([DATA]);
+
+    X_AXIS.enter()
+      .append("g")
+      .classed("x-axis", true)
+      .merge(X_AXIS)
+      .attr(
+        "transform",
+        "translate(" +
+          Y_AXIS_WIDTH +
+          "," +
+          (Y_LABEL_HEIGHT + VERT_PAD + CHART_HEIGHT) +
+          ")"
+      )
+      .call(d3.axisBottom(X_SCALE).tickSizeOuter(0));
+
+    // Create context x axis
+    X_AXIS_CONTEXT = SVG.selectAll(".x-axis-context").data([DATA]);
+
+    X_AXIS_CONTEXT.enter()
+      .append("g")
+      .classed("x-axis-context", true)
+      .merge(X_AXIS_CONTEXT)
+      .attr(
+        "transform",
+        "translate(" +
+          Y_AXIS_WIDTH +
+          "," +
+          (HEIGHT - LEG.height - X_LABEL_HEIGHT - VERT_PAD - X_AXIS_HEIGHT) +
+          ")"
+      )
+      .call(d3.axisBottom(X_SCALE_CONTEXT).tickSizeOuter(0));
+
+    // Create y axis
+    Y_AXIS = SVG.selectAll(".y-axis").data([DATA]);
+
+    Y_AXIS.enter()
+      .append("g")
+      .classed("y-axis", true)
+      .attr(
+        "transform",
+        "translate(" + Y_AXIS_WIDTH + "," + (Y_LABEL_HEIGHT + VERT_PAD) + ")"
+      )
+      .merge(Y_AXIS)
+      .call(
+        d3
+          .axisLeft(Y_SCALE)
+          .tickValues(
+            getTickValues(
+              0,
+              d3.max(DATA, function(d) {
+                return d.total;
+              }) + 1,
+              parseInt(CHART_HEIGHT / Y_TICK_HEIGHT),
+              1
+            )
+          )
+          .tickFormat(d3.format("d"))
+          .tickSizeOuter(0)
+      );
+
+    // Create brush for context graph
+    BRUSH = d3
+      .brushX()
+      .extent([[0, 0], [CHART_WIDTH, CONTEXT_HEIGHT]])
+      .on("brush end", brushed);
+
+    // Create zoom for primary graph
+    ZOOM = d3
+      .zoom()
+      .scaleExtent([1, Infinity])
+      .translateExtent([[0, 0], [CHART_WIDTH, CHART_HEIGHT]])
+      .extent([[0, 0], [CHART_WIDTH, CHART_HEIGHT]])
+      .on("zoom", zoomed);
+
+    // Append G_CLIP and save references
+    SVG.selectAll(".g-clip")
+      .data([DATA])
+      .enter()
+      .append("g")
+      .classed("g-clip", true)
+      .attr("clip-path", "url(#clip)");
+
+    G_CLIP = SVG.select(".g-clip");
+
+    // Append G_CHART_AREA and save references
+    G_CLIP.selectAll(".g-chart-area")
+      .data([DATA])
+      .enter()
+      .append("g")
+      .classed("g-chart-area", true);
+
+    G_CHART_AREA = SVG.select(".g-chart-area").attr(
+      "transform",
+      "translate(" +
+        (Y_AXIS_WIDTH + Y_AXIS_PAD) +
+        "," +
+        (Y_LABEL_HEIGHT + VERT_PAD) +
+        ")"
+    );
+
+    // Create area generator
+    AREA = d3
+      .area()
+      .x(function(d) {
+        return X_SCALE(d.data.date);
+      })
+      .y0(function(d) {
+        return Y_SCALE(d[1]);
+      })
+      .y1(function(d) {
+        return Y_SCALE(d[0]);
+      })
+      .curve(d3.curveBasis);
+
+    // Create clip path
+    CLIP_PATH = SVG.select("defs")
+      .selectAll("clipPath")
+      .data([DATA]);
+
+    CLIP_PATH.enter()
+      .append("clipPath")
+      .attr("id", "clip");
+
+    // Create clip path rect
+    CLIP_PATH_RECT = SVG.select("defs")
+      .select("#clip")
+      .selectAll("rect")
+      .data([DATA]);
+
+    CLIP_PATH_RECT.enter()
+      .append("rect")
+      .classed("clip-path-rect", true)
+      .merge(CLIP_PATH_RECT)
+      .attr("x", Y_AXIS_WIDTH + Y_AXIS_PAD)
+      .attr("y", Y_LABEL_HEIGHT + VERT_PAD)
+      .attr("width", CHART_WIDTH)
+      .attr("height", CHART_HEIGHT);
+
+    // Create data paths
+    DATA_PATHS = G_CHART_AREA.selectAll("path").data(STACKED_DATA, function(d) {
+      return d.id;
+    });
+
+    DATA_PATHS.enter()
+      .append("path")
+      .attr("id", function(d) {
+        return d.id;
+      })
+      .classed("data-path", true)
+      .merge(DATA_PATHS)
+      .attr(
+        "transform",
+        "translate(0, " +
+          (CHART_HEIGHT -
+            Y_SCALE(
+              d3.min(STACKED_DATA[0], function(d) {
+                return d[0];
+              })
+            )) +
+          ")"
+      )
+      .attr("d", AREA)
+      .attr("fill", function(d) {
+        return "url(#" + d.id + "-gradient)";
+      });
+
+    // Create zoom rect
+    ZOOM_RECT = G_CLIP.selectAll(".zoom").data([DATA]);
+
+    ZOOM_RECT.enter()
+      .append("rect")
+      .classed("zoom", true)
+      .merge(ZOOM_RECT)
+      .attr(
+        "transform",
+        "translate(" +
+          (Y_AXIS_WIDTH + Y_AXIS_PAD) +
+          "," +
+          (Y_LABEL_HEIGHT + VERT_PAD) +
+          ")"
+      )
+      .attr("width", CHART_WIDTH)
+      .attr("height", CHART_HEIGHT)
+      .call(ZOOM);
+
+    // Append G_CONTEXT_AREA and save references
+    SVG.selectAll(".g-context-area")
+      .data([DATA])
+      .enter()
+      .append("g")
+      .classed("g-context-area", true);
+
+    G_CONTEXT_AREA = SVG.select(".g-context-area").attr(
+      "transform",
+      "translate(" +
+        (Y_AXIS_WIDTH + Y_AXIS_PAD) +
+        ", " +
+        (HEIGHT -
+          LEG.height -
+          X_LABEL_HEIGHT -
+          VERT_PAD -
+          X_AXIS_HEIGHT -
+          CONTEXT_HEIGHT) +
+        ")"
+    );
+
+    // Create context area generator
+    CONTEXT_AREA = d3
+      .area()
+      .x(function(d) {
+        return X_SCALE_CONTEXT(d.data.date);
+      })
+      .y0(function(d) {
+        return Y_SCALE_CONTEXT(d[1]);
+      })
+      .y1(function(d) {
+        return Y_SCALE_CONTEXT(d[0]);
+      })
+      .curve(d3.curveBasis);
+
+    // Create context data paths
+    DATA_PATHS_CONTEXT = G_CONTEXT_AREA.selectAll("path").data(
+      STACKED_DATA,
+      function(d) {
+        return d.id;
+      }
+    );
+
+    DATA_PATHS_CONTEXT.enter()
+      .append("path")
+      .classed("data-path-context", true)
+      .merge(DATA_PATHS_CONTEXT)
+      .attr(
+        "transform",
+        "translate(0, " +
+          (CONTEXT_HEIGHT -
+            Y_SCALE_CONTEXT(
+              d3.min(STACKED_DATA[0], function(d) {
+                return d[0];
+              })
+            )) +
+          ")"
+      )
+      .attr("d", CONTEXT_AREA)
+      .attr("fill", function(d) {
+        return "url(#" + d.id + "-gradient)";
+      });
+
+    // Create brush group
+    BRUSH_GROUP = G_CONTEXT_AREA.selectAll("g").data([DATA]);
+
+    BRUSH_GROUP.enter()
+      .append("g")
+      .classed("brush", true)
+      .merge(BRUSH_GROUP)
+      .call(BRUSH)
+      .call(BRUSH.move, X_SCALE.range());
+  }
+
+  // Redraw data dependent elements on data changedIndex
+  function updateElements() {
+    // Create gradient definitions
+    defineGradients();
+
+    // Compute the x y locations for legend elements
+    calculateLegendDimensions();
+
+    // Update legend elements
+    updateLegend();
+
+    // Move x axis label
+    SVG.select(".x-label")
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("y", HEIGHT - LEG.height - VERT_PAD);
+
+    // Calculate chart dimensions
+    CHART_WIDTH = WIDTH - RIGHT_AXIS_PAD - Y_AXIS_PAD - Y_AXIS_WIDTH;
+    OLD_CHART_HEIGHT = CHART_HEIGHT;
+    CHART_HEIGHT =
+      HEIGHT -
+      LEG.height -
+      X_LABEL_HEIGHT -
+      VERT_PAD -
+      X_AXIS_HEIGHT -
+      CONTEXT_HEIGHT -
+      VERT_PAD -
+      X_AXIS_HEIGHT -
+      VERT_PAD -
+      Y_LABEL_HEIGHT;
+
+    // Update y scales
+    OLD_Y_SCALE = Y_SCALE;
+    Y_SCALE = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(DATA, function(d) {
+          return d.total;
+        })
+      ])
+      .rangeRound([CHART_HEIGHT, 0]);
+
+    Y_SCALE_CONTEXT = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(DATA, function(d) {
+          return d.total;
+        })
+      ])
+      .rangeRound([CONTEXT_HEIGHT, 0]);
+
+    // Update y axis
+    SVG.selectAll(".y-axis")
+      .transition()
+      .duration(TRANS_TIME)
+      .call(
+        d3
+          .axisLeft(Y_SCALE)
+          .tickValues(
+            getTickValues(
+              0,
+              d3.max(DATA, function(d) {
+                return d.total;
+              }) + 1,
+              parseInt(CHART_HEIGHT / Y_TICK_HEIGHT),
+              1
+            )
+          )
+          .tickFormat(d3.format("d"))
+          .tickSizeOuter(0)
+      );
+
+    // Move x axes
+    SVG.select(".x-axis")
+      .transition()
+      .duration(TRANS_TIME)
+      .attr(
+        "transform",
+        "translate(" +
+          Y_AXIS_WIDTH +
+          "," +
+          (Y_LABEL_HEIGHT + VERT_PAD + CHART_HEIGHT) +
+          ")"
+      );
+
+    SVG.select(".x-axis-context")
+      .transition()
+      .duration(TRANS_TIME)
+      .attr(
+        "transform",
+        "translate(" +
+          Y_AXIS_WIDTH +
+          "," +
+          (HEIGHT - LEG.height - X_LABEL_HEIGHT - VERT_PAD - X_AXIS_HEIGHT) +
+          ")"
+      );
+
+    // Create old area generator
+    OLD_AREA = d3
+      .area()
+      .x(function(d) {
+        return X_SCALE(d.data.date);
+      })
+      .y0(function(d) {
+        return OLD_Y_SCALE(d[1]);
+      })
+      .y1(function(d) {
+        return OLD_Y_SCALE(d[0]);
+      })
+      .curve(d3.curveBasis);
+
+    // Update clip path rect height
+    SVG.select(".clip-path-rect")
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("height", CHART_HEIGHT);
+
+    // Update data paths
+    DATA_PATHS = G_CHART_AREA.selectAll("path").data(STACKED_DATA, function(d) {
+      return d.id;
+    });
+
+    DATA_PATHS.classed("entering", false)
+      .transition()
+      .duration(TRANS_TIME)
+      .attr(
+        "transform",
+        "translate(0, " +
+          (CHART_HEIGHT -
+            Y_SCALE(
+              d3.min(STACKED_DATA[0], function(d) {
+                return d[0];
+              })
+            )) +
+          ")"
+      )
+      .attr("d", AREA);
+
+    DATA_PATHS.enter()
+      .append("path")
+      .classed("entering", true)
+      .attr("id", function(d) {
+        return d.id;
+      })
+      .classed("data-path", true)
+      .attr("fill", function(d) {
+        return "url(#" + d.id + "-gradient)";
+      })
+      .attr(
+        "transform",
+        "translate(0, " +
+          (OLD_CHART_HEIGHT -
+            OLD_Y_SCALE(
+              d3.min(OLD_STACKED_DATA[0], function(d) {
+                return d[0];
+              })
+            )) +
+          ")"
+      )
+      .attr("d", function() {
+        const neighbor = getNeighborElement(this, null, function(el) {
+          return d3.select(el).classed("entering");
+        });
+        const index = neighbor.dir == "previousElementSibling" ? 1 : 0;
+        const neighborDatum =
+          OLD_STACKED_DATA[
+            OLD_STACKED_DATA.findIndex(function(element) {
+              return element.id == neighbor.el.id;
+            })
+          ];
+
+        const datum = [];
+        for (let i = 0; i < neighborDatum.length; i++) {
+          datum.push({
+            0: neighborDatum[i][index],
+            1: neighborDatum[i][index],
+            data: neighborDatum[i].data
+          });
+        }
+
+        return OLD_AREA(datum);
+      })
+      .transition()
+      .duration(TRANS_TIME)
+      .attr(
+        "transform",
+        "translate(0, " +
+          (CHART_HEIGHT -
+            Y_SCALE(
+              d3.min(STACKED_DATA[0], function(d) {
+                return d[0];
+              })
+            )) +
+          ")"
+      )
+      .attr("d", AREA);
+
+    DATA_PATHS.exit()
+      .classed("exiting", true)
+      .transition()
+      .duration(TRANS_TIME)
+      .attr(
+        "transform",
+        "translate(0, " +
+          (CHART_HEIGHT -
+            Y_SCALE(
+              d3.min(STACKED_DATA[0], function(d) {
+                return d[0];
+              })
+            )) +
+          ")"
+      )
+      .attr("d", function() {
+        const neighbor = getNeighborElement(this, null, function(el) {
+          return d3.select(el).classed("exiting");
+        });
+        const index = neighbor.dir == "previousElementSibling" ? 1 : 0;
+        const neighborDatum =
+          STACKED_DATA[
+            STACKED_DATA.findIndex(function(element) {
+              return element.id == neighbor.el.id;
+            })
+          ];
+
+        const datum = [];
+        for (let i = 0; i < neighborDatum.length; i++) {
+          datum.push({
+            0: neighborDatum[i][index],
+            1: neighborDatum[i][index],
+            data: neighborDatum[i].data
+          });
+        }
+
+        return AREA(datum);
+      })
+      .remove();
+
+    // Move zoom rect
+    G_CLIP.select(".zoom")
+      .transition()
+      .duration(TRANS_TIME)
+      .attr(
+        "transform",
+        "translate(" +
+          (Y_AXIS_WIDTH + Y_AXIS_PAD) +
+          "," +
+          (Y_LABEL_HEIGHT + VERT_PAD) +
+          ")"
+      )
+      .attr("height", CHART_HEIGHT);
+
+    // Move context area group
+    G_CONTEXT_AREA.transition()
+      .duration(TRANS_TIME)
+      .attr(
+        "transform",
+        "translate(" +
+          (Y_AXIS_WIDTH + Y_AXIS_PAD) +
+          ", " +
+          (HEIGHT -
+            LEG.height -
+            X_LABEL_HEIGHT -
+            VERT_PAD -
+            X_AXIS_HEIGHT -
+            CONTEXT_HEIGHT) +
+          ")"
+      );
+
+    // Remove and recreate context data paths
+    G_CONTEXT_AREA.selectAll(".data-path-context").remove();
+
+    DATA_PATHS_CONTEXT = G_CONTEXT_AREA.selectAll("path").data(
+      STACKED_DATA,
+      function(d) {
+        return d.id;
+      }
+    );
+
+    DATA_PATHS_CONTEXT.enter()
+      .append("path")
+      .classed("data-path-context", true)
+      .merge(DATA_PATHS_CONTEXT)
+      .attr(
+        "transform",
+        "translate(0, " +
+          (CONTEXT_HEIGHT -
+            Y_SCALE_CONTEXT(
+              d3.min(STACKED_DATA[0], function(d) {
+                return d[0];
+              })
+            )) +
+          ")"
+      )
+      .attr("d", CONTEXT_AREA)
+      .attr("fill", function(d) {
+        return "url(#" + d.id + "-gradient)";
+      });
+  }
+
+  /******************************************************* Helper Functions *******************************************************/
+
+  // Determine whether or not page is being rendered in iFrame
+  function inIframe() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  // Use fake scales to determine axes dimensions
+  function calculateAxesDimensions() {
+    // Initialize scales with fake ranges
+    X_SCALE = d3
+      .scaleTime()
+      .domain(
+        d3.extent(DATA, function(d) {
+          return d.date;
+        })
+      )
+      .rangeRound([0, 10]);
+
+    Y_SCALE = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(DATA, function(d) {
+          return d.total;
+        })
+      ])
+      // .domain([0, d3.max(STACKED_DATA, function(layer) { return d3.max(layer, function(d){ return d[0] + d[1];}); })])
+      .rangeRound([0, 10]);
+
+    // Use dummy axes with fake scales to obtain dimensions
+    SVG.append("g")
+      .classed("y-axis", true)
+      .call(d3.axisLeft(Y_SCALE))
+      .each(function() {
+        Y_TICK_HEIGHT = d3
+          .select(this)
+          .select("text")
+          .node()
+          .getBBox().height;
+        Y_AXIS_WIDTH = this.getBBox().width;
+        this.remove();
+      });
+
+    SVG.append("g")
+      .classed("x-axis", true)
+      .call(d3.axisBottom(X_SCALE))
+      .each(function() {
+        d3.select(this)
+          .selectAll("text")
+          .each(function() {
+            X_TICK_MAX_WIDTH = Math.max(
+              X_TICK_MAX_WIDTH,
+              this.getComputedTextLength() + 2 * X_TICK_PAD
+            );
+          });
+        X_AXIS_HEIGHT = this.getBBox().height;
+        this.remove();
+      });
+  }
+
+  // Compute array of readable tick values between min (inclusive) and max (exclusive) of length less than count
+  function getTickValues(min, max, count, minInterval) {
+    const pattern = [5, 2, 1];
+    let tickValues;
+    let range = max - min;
+    let pow = Math.floor(Math.log10(range));
+    let p = 0;
+    let interval = pattern[p] * Math.pow(10, pow);
+
+    do {
+      tickValues = d3.range(min, max, interval);
+
+      if (p == 2) {
+        p = 0;
+        pow--;
+      } else {
+        p++;
+      }
+
+      interval = pattern[p] * Math.pow(10, pow);
+    } while (d3.range(min, max, interval).length <= count && interval >= minInterval);
+
+    return tickValues;
+  }
+
+  // Handle brush events
+  function brushed() {
+    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+    var s = d3.event.selection || X_SCALE_CONTEXT.range(); // use entire range if selection is null
+
+    // Update x scale domain of main chart scale of context chart
+    X_SCALE.domain(s.map(X_SCALE_CONTEXT.invert, X_SCALE_CONTEXT));
+
+    // Update x axis of main chart using updated scale
+    SVG.select(".x-axis").call(d3.axisBottom(X_SCALE).tickSizeOuter(0));
+
+    // Update paths of main chart
+    G_CHART_AREA.selectAll("path").attr("d", AREA);
+
+    // Update zoom to point to same location as brush
+    G_CLIP.select(".zoom").call(
+      ZOOM.transform,
+      d3.zoomIdentity.scale(CHART_WIDTH / (s[1] - s[0])).translate(-s[0], 0)
+    );
+  }
+
+  // Handle zoom events
+  function zoomed() {
+    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+    var t = d3.event.transform;
+
+    // Update x scale domain of main chart using scale of context chart
+    X_SCALE.domain(t.rescaleX(X_SCALE_CONTEXT).domain());
+
+    // Update x axis of main chart using updated scale
+    SVG.select(".x-axis").call(d3.axisBottom(X_SCALE).tickSizeOuter(0));
+
+    // Update paths of main chart
+    G_CHART_AREA.selectAll("path").attr("d", AREA);
+
+    // Update brush to point to same location as zoom
+    G_CONTEXT_AREA.select(".brush").call(
+      BRUSH.move,
+      X_SCALE.range().map(t.invertX, t)
+    );
+  }
+
+  // Determine coordinates for dynamic legend
+  function calculateLegendDimensions() {
+    // Create dummy text variable to get legend title height
+    let titleHeight;
+    SVG.append("text")
+      .classed("legend-text", true)
+      .text("TEST")
+      .each(function() {
+        titleHeight = this.getBBox().height;
+        this.remove();
+      });
+
+    // Create dummy text variables to get legend text height/widths
+    const textWidths = [];
+    let textHeight;
+    SVG.selectAll(".dummyText")
+      .data(LEG.data)
+      .enter()
+      .append("text")
+      .classed("legend-text", true)
+      .text(function(d) {
+        return d.key;
+      })
+      .each(function() {
+        textHeight = this.getBBox().height;
+        textWidths.push(this.getComputedTextLength());
+        this.remove();
+      });
+
+    // Determine which row each element will sit in and how long each row is
+    const rows = [];
+    const rowSums = [];
+    let rowSum;
+    let row = 0;
+    for (let i = 0; i < textWidths.length; i++) {
+      rowSum = textWidths[i] + LEG.rectWidth + LEG.rectPad + LEG.textPad;
+      rows.push(row);
+      while (
+        rowSum +
+          textWidths[i + 1] +
+          LEG.rectWidth +
+          LEG.rectPad +
+          LEG.textPad <=
+          WIDTH &&
+        i + 1 < textWidths.length
+      ) {
+        i++;
+        rowSum += textWidths[i] + LEG.rectWidth + LEG.rectPad + LEG.textPad;
+        rows.push(row);
+      }
+      rowSums.push(rowSum);
+      row++;
+    }
+
+    // Calculate x and y coordinates for legend elements
+    LEG.elPos = [];
+    for (let i = 0; i < textWidths.length; i++) {
+      LEG.elPos.push({
+        x:
+          i == 0 || rows[i - 1] != rows[i]
+            ? WIDTH / 2 - rowSums[rows[i]] / 2
+            : LEG.elPos[i - 1].x +
+              textWidths[i - 1] +
+              LEG.rectWidth +
+              LEG.rectPad +
+              LEG.textPad,
+        y: titleHeight + LEG.titlePad + rows[i] * (textHeight + LEG.rowPad)
+      });
+    }
+
+    // Set legend height
+    LEG.height = LEG.elPos[LEG.elPos.length - 1].y + textHeight + LEG.rowPad;
+  }
+
+  // Draw legend elements using provided data
+  function drawLegend() {
+    // Append/update legend group and save reference
+    SVG.selectAll(".g-legend")
+      .data([LEG.title])
+      .enter()
+      .append("g")
+      .classed("g-legend", true);
+
+    LEG.groupSelection = SVG.select(".g-legend");
+
+    // Create legend title
+    LEG.titleDataJoin = LEG.groupSelection
+      .selectAll(".legend-title")
+      .data([LEG.title]);
+
+    LEG.titleDataJoin
+      .enter()
+      .append("text")
+      .classed("legend-title", true)
+      .text(function(d) {
+        return d;
+      })
+      .merge(LEG.titleDataJoin)
+      .attr("transform", "translate(" + WIDTH / 2 + ", 0)");
+
+    // Create legend rects
+    LEG.rectsDataJoin = LEG.groupSelection
+      .selectAll(".legend-rect")
+      .data(LEG.data, function(d) {
+        return d.id;
+      });
+
+    LEG.rectsDataJoin
+      .enter()
+      .append("rect")
+      .classed("legend-rect", true)
+      .attr("width", LEG.rectWidth)
+      .attr("height", LEG.rectWidth)
+      .attr("fill", function(d) {
+        return "url(#" + d.id + "-gradient)";
+      })
+      .attr("stroke", function(d) {
+        return GRAD.stroke[d.key]
+          ? GRAD.stroke[d.key]
+          : GRAD.strokeScale(d.key);
+      })
+      .merge(LEG.rectsDataJoin)
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y;
+      });
+
+    // Create legend text
+    LEG.textsDataJoin = LEG.groupSelection
+      .selectAll(".legend-text")
+      .data(LEG.data, function(d) {
+        return d.id;
+      });
+
+    LEG.textsDataJoin
+      .enter()
+      .append("text")
+      .classed("legend-text", true)
+      .text(function(d) {
+        return d.key;
+      })
+      .merge(LEG.textsDataJoin)
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x + LEG.rectWidth + LEG.rectPad;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y + LEG.rectWidth / 2;
+      });
+
+    // Position legend
+    LEG.groupSelection.attr("transform", function() {
+      return "translate(0, " + (HEIGHT - LEG.height) + ")";
+    });
+  }
+
+  // Update legend on data change
+  function updateLegend() {
+    // Update legend rects
+    LEG.rectsDataJoin = LEG.groupSelection
+      .selectAll(".legend-rect")
+      .data(LEG.data, function(d) {
+        return d.id;
+      });
+
+    LEG.rectsDataJoin
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y;
+      })
+      .style("opacity", 1);
+
+    LEG.rectsDataJoin
+      .enter()
+      .append("rect")
+      .classed("legend-rect", true)
+      .attr("width", LEG.rectWidth)
+      .attr("height", LEG.rectWidth)
+      .attr("fill", function(d) {
+        return "url(#" + d.id + "-gradient)";
+      })
+      .attr("stroke", function(d) {
+        return GRAD.stroke[d.key]
+          ? GRAD.stroke[d.key]
+          : GRAD.strokeScale(d.key);
+      })
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y;
+      })
+      .style("opacity", 0)
+      .transition()
+      .duration(TRANS_TIME)
+      .style("opacity", 1);
+
+    LEG.rectsDataJoin
+      .exit()
+      .transition()
+      .duration(TRANS_TIME)
+      .style("opacity", 0)
+      .remove();
+
+    // Update legend text
+    LEG.textsDataJoin = LEG.groupSelection
+      .selectAll(".legend-text")
+      .data(LEG.data, function(d) {
+        return d.id;
+      });
+
+    LEG.textsDataJoin
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x + LEG.rectWidth + LEG.rectPad;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y + LEG.rectWidth / 2;
+      })
+      .style("opacity", 1);
+
+    LEG.textsDataJoin
+      .enter()
+      .append("text")
+      .classed("legend-text", true)
+      .text(function(d) {
+        return d.key;
+      })
+      .attr("x", function(d, i) {
+        return LEG.elPos[i].x + LEG.rectWidth + LEG.rectPad;
+      })
+      .attr("y", function(d, i) {
+        return LEG.elPos[i].y + LEG.rectWidth / 2;
+      })
+      .style("opacity", 0)
+      .transition()
+      .duration(TRANS_TIME)
+      .style("opacity", 1);
+
+    LEG.textsDataJoin
+      .exit()
+      .transition()
+      .duration(TRANS_TIME)
+      .style("opacity", 0)
+      .remove();
+
+    // Update legend position
+    LEG.groupSelection
+      .transition()
+      .duration(TRANS_TIME)
+      .attr("transform", function() {
+        return "translate(0, " + (HEIGHT - LEG.height) + ")";
+      });
+  }
+
+  // Create/update gradient definitions
+  function defineGradients() {
+    GRAD.gradsDataJoin = GRAD.defsSelection
+      .selectAll(".gradient")
+      .data(GRAD.data, function(d) {
+        return d.id;
+      });
+
+    GRAD.gradsDataJoin
+      .enter()
+      .append("linearGradient")
+      .classed("gradient", true)
+      .attr("id", function(d) {
+        return d.id + "-gradient";
+      })
+      .attr("x1", "0%")
+      .attr("x2", "100%")
+      .attr("y1", "50%")
+      .attr("y2", "50%")
+      .each(function(d) {
+        // Append color stops
+        d3.select(this)
+          .append("stop")
+          .attr("class", "start")
+          .attr("offset", "0%")
+          .attr("stop-color", function() {
+            return GRAD.fill[d.key] ? GRAD.fill[d.key] : GRAD.fillScale(d.key);
+          })
+          .attr("stop-opacity", 1);
+
+        d3.select(this)
+          .append("stop")
+          .attr("class", "end")
+          .attr("offset", "100%")
+          .attr("stop-color", function() {
+            return GRAD.fill[d.key] ? GRAD.fill[d.key] : GRAD.fillScale(d.key);
+          })
+          .attr("stop-opacity", 0.7);
+      });
+  }
+
+  // Get neighbor (previous or next) element
+  function getNeighborElement(el, direction, condition) {
+    if (direction) {
+      // If direction given, select element in given direction
+      // Select first neighbor in given direction
+      let neighbor = el[direction];
+
+      // If condition passed, iterate until condition false
+      if (condition) {
+        while (neighbor && condition(neighbor)) {
+          neighbor = neighbor[direction];
+        }
+      }
+
+      return { el: neighbor, dir: direction };
+    } else {
+      // Otherwise try previous, else next
+      const prev = getNeighborElement(el, "previousElementSibling", condition);
+      const next = getNeighborElement(el, "nextElementSibling", condition);
+      return prev.el ? prev : next;
+    }
+  }
+});
+</script>
+</body>
+</html>
