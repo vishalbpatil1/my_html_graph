@@ -46,10 +46,10 @@ limitations under the License.
 		var _selections = null;
 		var _bar = null;
 		var _options = {
-			legend: {
-				position: 'bottom'
-			},
-			hAxis: { minValue: 0 }
+			legend: {position: 'bottom'},
+			hAxis: { minValue: 0 },
+			is3D: true,
+			title: 'My Daily Activities',
 		};
 		
         google.charts.load('current', {'packages':['corechart']});
@@ -60,7 +60,7 @@ limitations under the License.
         function onChartLoad() 
 		{
 			// If you want vertical bars, replace BarChart below with ColumnChart
-            _bar = new google.visualization.BarChart(document.getElementById('chart_div'));
+            _bar = new google.visualization.ColumnChart(document.getElementById('chart_div'));
 			google.visualization.events.addListener(_bar, 'ready', readyHandler);
 			google.visualization.events.addListener(_bar, 'select', selectHandler);
 			
