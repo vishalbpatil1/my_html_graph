@@ -60,8 +60,8 @@ limitations under the License.
         function onChartLoad() 
 		{
 			// If you want vertical bars, replace BarChart below with ColumnChart
-            //_bar = new google.visualization.BarChart(document.getElementById('chart_div'));
-            _bar = new google.visualization.PieChart(document.getElementById('chart_div'));
+            _bar = new google.visualization.BarChart(document.getElementById('chart_div'));
+            //_bar = new google.visualization.PieChart(document.getElementById('chart_div'));
 			google.visualization.events.addListener(_bar, 'ready', readyHandler);
 			google.visualization.events.addListener(_bar, 'select', selectHandler);
 			
