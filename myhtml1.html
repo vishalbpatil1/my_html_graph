@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--
+Copyright 2022 Vishal Patil.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    https://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+	<script type="text/javascript" src="util/messagingUtil.js"></script>
+    <style>
+        html, body {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            overflow: hidden;
+            width: 100%;
+        }
+		img {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+            max-height: 128px;
+            max-width: 100%;
+		}
+        }
+    </style>
+</head>
+<body>
+<div>
+<center>
+      <h1 id="News_title" style="font-family: verdana;">[placeholder: title will change based on parameters]</h1>
+</center>
+</div>	
+<div>
+<center>
+      <h3 id="News_descr" style="font-family: verdana;">[placeholder: News will change based on parameters]</h3>
+</center>
+</div>
+<div>
+<center>
+      <img src="" id="News_img" />
+</center>
+</div>
+<script>
+   va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE);
+
+	function NEWS_UPDATE(vaMsgObj)
+	{
+		if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount === 1) {
+			document.getElementById("News_img").src = vaMsgObj.data[0][0];
+      document.getElementById("News_title").innerHTML= vaMsgObj.data[0][1];
+      document.getElementById("News_descr").innerHTML= vaMsgObj.data[0][2];
+		}
+		else {
+			document.getElementById("News_img").src = "";
+      document.getElementById("News_title").innerHTML= "";
+      document.getElementById("News_descr").innerHTML= "";      
+		}
+</script>
+</body>
+</html>
