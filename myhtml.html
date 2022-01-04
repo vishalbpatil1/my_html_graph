@@ -61,7 +61,7 @@ limitations under the License.
 	function NEWS_Title_UPDATE(vaMsgObj1)
 	{
 		if (vaMsgObj1 && vaMsgObj1.data && vaMsgObj1.rowCount === 1) {
-			document.getElementById("News_title").innerHTML= vaMsgObj1.data[0][0];
+			document.getElementById("News_title").innerHTML= vaMsgObj1.data[0][1];
 		}
 		else {
 			document.getElementById("News_title").innerHTML= "";
@@ -73,7 +73,7 @@ limitations under the License.
 	function NEWS_Description_UPDATE(vaMsgObj2)
 	{
 		if (vaMsgObj2 && vaMsgObj2.data && vaMsgObj2.rowCount === 1) {
-			document.getElementById("News_descr").innerHTML= vaMsgObj2.data[0][0];
+			document.getElementById("News_descr").innerHTML= vaMsgObj2.data[0][2];
 		}
 		else {
 			document.getElementById("News_descr").innerHTML= "";
