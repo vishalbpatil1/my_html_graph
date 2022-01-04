@@ -98,7 +98,7 @@ limitations under the License.
 	function NEWS_LOCATION_UPDATE(vaMsgObj4)
 	{
 		if (vaMsgObj4 && vaMsgObj4.data && vaMsgObj4.rowCount === 1) {
-			document.getElementById("News_location").innerHTML= vaMsgObj2.data[0][4];
+			document.getElementById("News_location").innerHTML= vaMsgObj4.data[0][4];
 		}
 		else {
 			document.getElementById("News_location").innerHTML= "";
