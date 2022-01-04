@@ -37,12 +37,12 @@ limitations under the License.
 <body>
 <div>
 <center>
-      <h1 id="News_title" style="font-family: verdana;">[placeholder: title will change based on parameters]</h1>
+      <h1 id="News_title" style="font-family: verdana;">[title will change based on parameters]</h1>
 </center>
 </div>	
 <div>
 <center>
-      <h3 id="News_descr" style="font-family: verdana;">[placeholder: News will change based on parameters]</h3>
+      <h3 id="News_descr" style="font-family: verdana;">[ News will change based on parameters]</h3>
 </center>
 </div>
 <div>
@@ -55,15 +55,15 @@ limitations under the License.
 
 	function NEWS_UPDATE(vaMsgObj)
 	{
-		if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount === 1) {
+		if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount === 3) {
 			document.getElementById("News_img").src = vaMsgObj.data[0][0];
-      document.getElementById("News_title").innerHTML= vaMsgObj.data[0][1];
-      document.getElementById("News_descr").innerHTML= vaMsgObj.data[0][2];
+                        document.getElementById("News_title").innerHTML= vaMsgObj.data[0][1];
+                        document.getElementById("News_descr").innerHTML= vaMsgObj.data[0][2];
 		}
 		else {
 			document.getElementById("News_img").src = "";
-      document.getElementById("News_title").innerHTML= "";
-      document.getElementById("News_descr").innerHTML= "";      
+                        document.getElementById("News_title").innerHTML= "";
+                        document.getElementById("News_descr").innerHTML= "";      
 		}
 </script>
 </body>
