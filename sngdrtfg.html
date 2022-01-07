@@ -24,7 +24,7 @@
 // id
   function update_first_variable(vaMsgObj1)
   {
-    if (vaMsgObj1 && vaMsgObj1.data && vaMsgObj1.rowCount === 1) 
+    if (vaMsgObj1 && vaMsgObj1.data && vaMsgObj1.rowCount > 1) 
       {var var1=vaMsgObj1.data[0][0];
       }
     else 
@@ -45,7 +45,7 @@
   va.messagingUtil.setOnDataReceivedCallback(update_second_variable);
   function update_second_variable(vaMsgObj2)
   {
-      if (vaMsgObj2 && vaMsgObj2.data && vaMsgObj2.rowCount === 1) 
+      if (vaMsgObj2 && vaMsgObj2.data && vaMsgObj2.rowCount > 1) 
         {var var2=vaMsgObj1.data[0][1];
         }
       else 
@@ -65,7 +65,7 @@
   va.messagingUtil.setOnDataReceivedCallback(update_third_variable);
   function update_third_variable(vaMsgObj3)
     {
-      if (vaMsgObj3 && vaMsgObj3.data && vaMsgObj3.rowCount === 1) 
+      if (vaMsgObj3 && vaMsgObj3.data && vaMsgObj3.rowCount > 1) 
         { var var3=vaMsgObj1.data[0][2];
         }
       else 
