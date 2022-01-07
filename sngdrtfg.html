@@ -10,77 +10,32 @@
 
    //get column in javascript... 
 
-//   function getCol(matrix, col){
-//        var column = [];
-//        for(var i=0; i<matrix.length; i++){
-//           column.push(matrix[i][col]);
-//        }
-//        return column; // return column data..
-//     }
+   function getCol(matrix, col){
+       var column = [];
+       for(var i=0; i<matrix.length; i++){
+          column.push(matrix[i][col]);
+       }
+       return column; // return column data..
+       }
 
-
-  va.messagingUtil.setOnDataReceivedCallback(update_first_variable);
+  va.messagingUtil.setOnDataReceivedCallback(update_variable);
 
 // id
   function update_first_variable(vaMsgObj1)
   {
-    if (vaMsgObj1 && vaMsgObj1.data && vaMsgObj1.rowCount > 1) 
-      {var var1=vaMsgObj1.data[0][0];
+    if (vaMsgObj1 && vaMsgObj1.data && vaMsgObj1.rowCount >1) 
+      {  
+         var var1=getCol(vaMsgObj1.data, 0);  //id
+         var var2=getCol(vaMsgObj1.data, 1);  // labels
+         var var3=getCol(vaMsgObj1.data, 2);  //  parents
       }
     else 
-      {var var1=null;
+      {
+       var var1=null;
+       var var2=null;
+       var var3=null;
       }
-//     {var var1=[
-//     "North America", "Europe", "Australia", "North America - Football", "Soccer",
-//     "North America - Rugby", "Europe - Football", "Rugby",
-//     "Europe - American Football","Australia - Football", "Association",
-//     "Australian Rules", "Autstralia - American Football", "Australia - Rugby",
-//     "Rugby League", "Rugby Union"
-//     ]}
-
   }
-
-
-// labels
-  va.messagingUtil.setOnDataReceivedCallback(update_second_variable);
-  function update_second_variable(vaMsgObj2)
-  {
-      if (vaMsgObj2 && vaMsgObj2.data && vaMsgObj2.rowCount > 1) 
-        {var var2=vaMsgObj1.data[0][1];
-        }
-      else 
-        { var var2=null;
-        }
-//       {var var2=[
-//     "North<br>America", "Europe", "Australia", "Football", "Soccer", "Rugby",
-//     "Football", "Rugby", "American<br>Football", "Football", "Association",
-//     "Australian<br>Rules", "American<br>Football", "Rugby", "Rugby<br>League",
-//     "Rugby<br>Union"
-//   ]}
-    
- }
-
-
-//parents
-  va.messagingUtil.setOnDataReceivedCallback(update_third_variable);
-  function update_third_variable(vaMsgObj3)
-    {
-      if (vaMsgObj3 && vaMsgObj3.data && vaMsgObj3.rowCount > 1) 
-        { var var3=vaMsgObj1.data[0][2];
-        }
-      else 
-        { var var3=null;
-        }
-//     {
-//     var var3=[
-//     "", "", "", "North America", "North America", "North America", "Europe",
-//     "Europe", "Europe","Australia", "Australia - Football", "Australia - Football",
-//     "Australia - Football", "Australia - Football", "Australia - Rugby",
-//     "Australia - Rugby"
-//   ]}
-    
-  }
-
   var data = [{
         type: "sunburst",
         maxdepth: 2,
