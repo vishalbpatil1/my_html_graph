@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="util/messagingUtil.js"></script>  
+</head>
+<body>
+<div>
+<center>
+      <p id="show_data" style="font-family: verdana;"></p>
+</center>
+</div>	
+<script>
+   va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE);
+
+	function NEWS_UPDATE(vaMsgObj)
+	{
+		if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount ===1) {
+    document.getElementById("show_data").innerHTML= vaMsgObj.data;
+		}
+		else {
+      document.getElementById("show_data").innerHTML= "";
+    }
+  }                      
+</script>
+</body>
+</html>
