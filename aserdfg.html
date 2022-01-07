@@ -20,7 +20,7 @@
 	{
 		if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1 ) {
 		    document.getElementById("show_data").innerHTML= vaMsgObj.data;
-		    document.getElementById("show_data1").innerHTML= vaMsgObj.data[0];
+		    document.getElementById("show_data1").innerHTML= const [vaMsgObj.data[0]];
 		    document.getElementById("show_data2").innerHTML= vaMsgObj.data[1];
 		    document.getElementById("show_data3").innerHTML= vaMsgObj.data[0][0];
 		    document.getElementById("show_data4").innerHTML= vaMsgObj.data[0][1];
