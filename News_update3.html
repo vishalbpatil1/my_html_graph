@@ -1,51 +1,45 @@
 <!DOCTYPE html>
-<!--
-Copyright 2022 Vishal Patil.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    https://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <html>
 <head>
 	<script type="text/javascript" src="util/messagingUtil.js"></script>
 </head>
 <body>
-    <div id="container" style="background-color:powderblue; border:2px solid black;padding: 5px;border-radius: 25px;">
-	<div>
-		<center>
-		      <h3 id="News_title"></h3>
-		      <h6 id="News_info"></h6>
-	        <img 
-		      src="" 
-		      id="News_img"
-		      style='border-radius: 10%;'>
-		      <h6 id="News_descr"></h6>
-   </center>
-	</div>
+    <div id="container" style="background-color:#DCDCDC; border:2px solid black;padding: 1px;border-radius: 25px;">
+<div>
+<center>
+	      <h3 id="News_title"></h3>
+	      <h6 id="News_info"></h6>
+	      <img 
+	      src="" 
+	      id="News_img"
+	      style='border-radius: 10%;'>
+</center>
+	      <h6 id="News_descr"></h6>
+</div>
    </div>
 <script>
    va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE);
 
 	function NEWS_UPDATE(vaMsgObj)
 	{
-		if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount = 1) {
-		      document.getElementById("News_img").src = vaMsgObj.data[0][0];
-		      document.getElementById("News_title").innerHTML= vaMsgObj.data[0][1];
-		      document.getElementById("News_descr").innerHTML= vaMsgObj.data[0][2];
-		      document.getElementById("News_info").innerHTML="Date   : "+vaMsgObj.data[0][3]+ "   Location : "+vaMsgObj.data[0][4] +"    State   : "+vaMsgObj.data[0][5];
+	if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount = 1) {
+	  const data= vaMsgObj.data;
+          let Date_=data[0][3];
+          let Location_=data[0][4];
+          let State_=data[0][5];
+          // create text
+          let text =`Date  :${Date_} Location  :${Location_}  State  :${State_}`;
+	      document.getElementById("News_img").src = data[0][0];
+	      document.getElementById("News_title").innerHTML= data[0][1];
+	      document.getElementById("News_descr").innerHTML= data[0][2];
+	      document.getElementById("News_info").innerHTML=text;
 		}
-		else {
-		      document.getElementById("News_img").src = "";
-		      document.getElementById("News_title").innerHTML= "";
-		      document.getElementById("News_descr").innerHTML= "";
-		      document.getElementById("News_info").innerHTML= " ";
-		}
+	else {
+	      document.getElementById("News_img").src = "";
+	      document.getElementById("News_title").innerHTML= "";
+	      document.getElementById("News_descr").innerHTML= "";
+	      document.getElementById("News_info").innerHTML= " ";
+	}
 	}	 
 </script>
 </body>
