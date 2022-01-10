@@ -18,7 +18,7 @@
 	      id="News_img" 
               align="left"
 	      width="20%"
-	      height="20%"
+	      height="30%"
 	      style="border-radius: 10%;">
   	    <p id="News_descr" style="padding-left:5px;"></p>
 </div>
@@ -33,11 +33,11 @@
           let Location_=data[0][4];
           let State_=data[0][5];
           // create text
-          let text =`Date  :${Date_}&nbsp;&nbsp;&nbsp;Location  :${Location_}&nbsp;&nbsp;&nbsp;State  :${State_}`;
+          let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
 	      document.getElementById("News_img").src = data[0][0];
 	      document.getElementById("News_title").innerHTML= data[0][1];
 	      document.getElementById("News_descr").innerHTML= data[0][2];
-	      document.getElementById("News_info").innerHTML=text;
+	      document.getElementById("News_info").innerHTML=text.toLowerCase();
 		}
 	else {
 	      document.getElementById("News_img").src = "";
