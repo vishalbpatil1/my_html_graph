@@ -224,7 +224,7 @@ document.getElementById("defaultOpen").click();
  va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE0);
   function NEWS_UPDATE0(vaMsgObj)
   {
-  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount === 1) {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
     const data= vaMsgObj.data;
           let Date_=data[0][3];
           let Location_=data[0][4];
@@ -247,7 +247,7 @@ document.getElementById("defaultOpen").click();
    va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE1);
   function NEWS_UPDATE1(vaMsgObj)
   {
-  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount === 1) {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
     const data= vaMsgObj.data;
           let Date_=data[1][3];
           let Location_=data[1][4];
@@ -270,7 +270,7 @@ document.getElementById("defaultOpen").click();
    va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE2);
   function NEWS_UPDATE2(vaMsgObj)
   {
-  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount === 1) {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
     const data= vaMsgObj.data;
           let Date_=data[2][3];
           let Location_=data[2][4];
@@ -292,7 +292,7 @@ document.getElementById("defaultOpen").click();
    va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE3);
   function NEWS_UPDATE3(vaMsgObj)
   {
-  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount === 1) {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
     const data= vaMsgObj.data;
           let Date_=data[3][3];
           let Location_=data[3][4];
