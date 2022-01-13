@@ -137,7 +137,7 @@ body, html {
         <img 
         src="" 
         id="News_img3" 
-              align="right"
+              align="left"
         width="20%"
         height="30%"
         style="border-radius: 10%;">
@@ -148,56 +148,47 @@ body, html {
 <div  class="item1" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
 <div>
 <center>
-        <h3 id="News_title00"></h3>
-        <h6 id="News_info00"></h6>
-        <hr>                        
+        <h3 id="News_title00" style="font-size:20px;"></h3>
+        <h6 id="News_info00" style="font-size:16px;"></h6>                        
         <img 
         src="" 
         id="News_img00" 
         width="30%"
         height="30%"
         style="border-radius: 10%;">
-        <p id="News_descr00" style="padding:10px;"></p>
+<!--         <p id="News_descr00" style="padding:10px;"></p> -->
  </center> 
 </div>
 </div>
 <div  class="item2" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
 <div>
 <center>
-        <h3 id="News_title11"></h3>
-        <h6 id="News_info11"></h6>
-        <hr>
- </center> 
-</div>
-<div>                         
+        <h3 id="News_title11" style="font-size:20px;"></h3>
+        <h6 id="News_info11" style="font-size:16px;"></h6>                       
         <img 
         src="" 
         id="News_img11" 
-              align="right"
         width="20%"
         height="30%"
         style="border-radius: 10%;">
-        <p id="News_descr11" style="padding:10px;"></p>
+<!--         <p id="News_descr11" style="padding:10px;"></p> -->
+</center>
 </div>
 </div>
-
+  
 <div class="item3" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
 <div>
 <center>
-        <h3 id="News_title22"></h3>
-        <h6 id="News_info22"></h6>
-        <hr>
- </center> 
-</div>
-<div >                         
+        <h3 id="News_title22" style="font-size:20px;"></h3>
+        <h6 id="News_info22" style="font-size:16px;"></h6>                       
         <img 
         src="" 
         id="News_img22" 
-              align="right"
         width="20%"
         height="30%"
         style="border-radius: 10%;">
-        <p id="News_descr22" style="padding:10px;"></p>
+<!--         <p id="News_descr22" style="padding:10px;"></p> -->
+</center>
 </div>  
 </div>
 </div>
@@ -263,15 +254,23 @@ document.getElementById("defaultOpen").click();
           // create text
           let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
         document.getElementById("News_img1").src = data[1][0];
+        document.getElementById("News_img11").src = data[1][0];
         document.getElementById("News_title1").innerHTML= data[1][1];
+         document.getElementById("News_title11").innerHTML= data[1][1];
         document.getElementById("News_descr1").innerHTML= data[1][2];
+        document.getElementById("News_descr11").innerHTML= data[1][2];
         document.getElementById("News_info1").innerHTML=text.toLowerCase();
+        document.getElementById("News_info11").innerHTML=text.toLowerCase();
     }
   else {
         document.getElementById("News_img1").src = "";
+        document.getElementById("News_img11").src = "";
         document.getElementById("News_title1").innerHTML= "";
+        document.getElementById("News_title11").innerHTML= "";
         document.getElementById("News_descr1").innerHTML= "";
+        document.getElementById("News_descr11").innerHTML= "";
         document.getElementById("News_info1").innerHTML= "";
+        document.getElementById("News_info11").innerHTML= "";
   }
   }
 
@@ -289,12 +288,20 @@ document.getElementById("defaultOpen").click();
         document.getElementById("News_title2").innerHTML= data[2][1];
         document.getElementById("News_descr2").innerHTML= data[2][2];
         document.getElementById("News_info2").innerHTML=text.toLowerCase();
+        document.getElementById("News_img22").src = data[2][0];
+        document.getElementById("News_title22").innerHTML= data[2][1];
+        document.getElementById("News_descr22").innerHTML= data[2][2];
+        document.getElementById("News_info22").innerHTML=text.toLowerCase();
     }
   else {
         document.getElementById("News_img2").src = "";
         document.getElementById("News_title2").innerHTML= "";
         document.getElementById("News_descr2").innerHTML= "";
         document.getElementById("News_info2").innerHTML= "";
+        document.getElementById("News_img22").src = "";
+        document.getElementById("News_title22").innerHTML= "";
+        document.getElementById("News_descr22").innerHTML= "";
+        document.getElementById("News_info22").innerHTML= "";
   }
   }
    va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE3);
