@@ -148,56 +148,56 @@ body, html {
 <div  class="item1" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
 <div>
 <center>
-        <h3 id="News_title0"></h3>
-        <h6 id="News_info0"></h6>
+        <h3 id="News_title00"></h3>
+        <h6 id="News_info00"></h6>
         <hr>                        
         <img 
         src="" 
-        id="News_img0" 
+        id="News_img00" 
         width="30%"
         height="30%"
         style="border-radius: 10%;">
-        <p id="News_descr0" style="padding:10px;"></p>
+        <p id="News_descr00" style="padding:10px;"></p>
  </center> 
 </div>
 </div>
 <div  class="item2" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
 <div>
 <center>
-        <h3 id="News_title1"></h3>
-        <h6 id="News_info1"></h6>
+        <h3 id="News_title11"></h3>
+        <h6 id="News_info11"></h6>
         <hr>
  </center> 
 </div>
 <div>                         
         <img 
         src="" 
-        id="News_img1" 
+        id="News_img11" 
               align="right"
         width="20%"
         height="30%"
         style="border-radius: 10%;">
-        <p id="News_descr1" style="padding:10px;"></p>
+        <p id="News_descr11" style="padding:10px;"></p>
 </div>
 </div>
 
 <div class="item3" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
 <div>
 <center>
-        <h3 id="News_title2"></h3>
-        <h6 id="News_info2"></h6>
+        <h3 id="News_title22"></h3>
+        <h6 id="News_info22"></h6>
         <hr>
  </center> 
 </div>
 <div >                         
         <img 
         src="" 
-        id="News_img2" 
+        id="News_img22" 
               align="right"
         width="20%"
         height="30%"
         style="border-radius: 10%;">
-        <p id="News_descr2" style="padding:10px;"></p>
+        <p id="News_descr22" style="padding:10px;"></p>
 </div>  
 </div>
 </div>
@@ -232,15 +232,23 @@ document.getElementById("defaultOpen").click();
           // create text
           let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
         document.getElementById("News_img0").src = data[0][0];
+        document.getElementById("News_img00").src = data[0][0];
         document.getElementById("News_title0").innerHTML= data[0][1];
+        document.getElementById("News_title00").innerHTML= data[0][1];
         document.getElementById("News_descr0").innerHTML= data[0][2];
+        document.getElementById("News_descr00").innerHTML= data[0][2];
         document.getElementById("News_info0").innerHTML=text.toLowerCase();
+        document.getElementById("News_info00").innerHTML=text.toLowerCase();
     }
   else {
         document.getElementById("News_img0").src = "";
+        document.getElementById("News_img00").src = "";
         document.getElementById("News_title0").innerHTML= "";
+        document.getElementById("News_title00").innerHTML= "";
         document.getElementById("News_descr0").innerHTML= "";
+        document.getElementById("News_descr00").innerHTML= "";
         document.getElementById("News_info0").innerHTML= "";
+        document.getElementById("News_info00").innerHTML= "";
   }
   }
 
