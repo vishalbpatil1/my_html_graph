@@ -148,6 +148,49 @@ body, html {
     <input type="submit" value="Reference link"  style="padding:15px;border-radius: 25px;" />
 </form>
 </div>
+</div><div id="News5" class="tabcontent" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title4"></h3>
+        <h6 id="News_info4"></h6>
+        <hr>
+ </center> 
+</div>
+<div >                         
+        <img 
+        src="" 
+        id="News_img4" 
+              align="left"
+        width="20%"
+        height="30%"
+        style="border-radius: 10%;">
+        <p id="News_descr4" style="padding:15px;"></p>
+  <form action="https://timesofindia.indiatimes.com/">
+    <input type="submit" value="Reference link"  style="padding:15px;border-radius: 25px;" />
+</form>
+</div>
+</div>
+<div id="News6" class="tabcontent" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title5"></h3>
+        <h6 id="News_info5"></h6>
+        <hr>
+ </center> 
+</div>
+<div >                         
+        <img 
+        src="" 
+        id="News_img5" 
+              align="left"
+        width="20%"
+        height="30%"
+        style="border-radius: 10%;">
+        <p id="News_descr5" style="padding:15px;"></p>
+  <form action="https://timesofindia.indiatimes.com/">
+    <input type="submit" value="Reference link"  style="padding:15px;border-radius: 25px;" />
+</form>
+</div>
 </div>
 <div class="grid-container">
 <div  class="item1" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
@@ -202,32 +245,48 @@ body, html {
 <div  class="item4" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
 <div>
 <center>
-        <h3 id="News_title00" style="font-size:20px;"></h3>
-        <h6 id="News_info00" style="font-size:16px;"></h6>                        
+        <h3 id="News_title33" style="font-size:20px;"></h3>
+        <h6 id="News_info33" style="font-size:16px;"></h6>                        
         <img 
         src="" 
-        id="News_img00" 
+        id="News_img33" 
         width="90%"
         height="80%"
         style="border-radius: 10%;">
-        <button class="tablink" onclick="openPage('News1', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">Read More</button>
-<!--         <p id="News_descr00" style="padding:10px;"></p> -->
+        <button class="tablink" onclick="openPage('News4', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">Read More</button>
+<!--         <p id="News_descr33" style="padding:10px;"></p> -->
  </center> 
 </div>
 </div>
 <div  class="item5" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
 <div>
 <center>
-        <h3 id="News_title00" style="font-size:20px;"></h3>
-        <h6 id="News_info00" style="font-size:16px;"></h6>                        
+        <h3 id="News_title44" style="font-size:20px;"></h3>
+        <h6 id="News_info44" style="font-size:16px;"></h6>                        
         <img 
         src="" 
-        id="News_img00" 
+        id="News_img44" 
         width="90%"
         height="80%"
         style="border-radius: 10%;">
-        <button class="tablink" onclick="openPage('News1', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">Read More</button>
-<!--         <p id="News_descr00" style="padding:10px;"></p> -->
+        <button class="tablink" onclick="openPage('News5', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">Read More</button>
+<!--         <p id="News_descr44" style="padding:10px;"></p> -->
+ </center> 
+</div>
+</div>
+<div  class="item6" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title55" style="font-size:20px;"></h3>
+        <h6 id="News_info55" style="font-size:16px;"></h6>                        
+        <img 
+        src="" 
+        id="News_img55" 
+        width="90%"
+        height="80%"
+        style="border-radius: 10%;">
+        <button class="tablink" onclick="openPage('News6', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">Read More</button>
+<!--         <p id="News_descr55" style="padding:10px;"></p> -->
  </center> 
 </div>
 </div>
@@ -344,6 +403,7 @@ document.getElementById("defaultOpen").click();
         document.getElementById("News_info22").innerHTML= "";
   }
   }
+ 
    va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE3);
   function NEWS_UPDATE3(vaMsgObj)
   {
@@ -358,12 +418,80 @@ document.getElementById("defaultOpen").click();
         document.getElementById("News_title3").innerHTML= data[3][1];
         document.getElementById("News_descr3").innerHTML= data[3][2];
         document.getElementById("News_info3").innerHTML=text.toLowerCase();
+        document.getElementById("News_img33").src = data[3][0];
+        document.getElementById("News_title33").innerHTML= data[3][1];
+        document.getElementById("News_descr33").innerHTML= data[3][2];
+        document.getElementById("News_info33").innerHTML=text.toLowerCase();
     }
   else {
         document.getElementById("News_img3").src = "";
         document.getElementById("News_title3").innerHTML= "";
         document.getElementById("News_descr3").innerHTML= "";
         document.getElementById("News_info3").innerHTML= "";
+        document.getElementById("News_img33").src = "";
+        document.getElementById("News_title33").innerHTML= "";
+        document.getElementById("News_descr33").innerHTML= "";
+        document.getElementById("News_info33").innerHTML= "";
+  }
+  }
+   va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE4);
+  function NEWS_UPDATE4(vaMsgObj)
+  {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
+    const data= vaMsgObj.data;
+          let Date_=data[4][3];
+          let Location_=data[4][4];
+          let State_=data[4][5];
+          // create text
+          let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
+        document.getElementById("News_img4").src = data[4][0];
+        document.getElementById("News_title4").innerHTML= data[4][1];
+        document.getElementById("News_descr4").innerHTML= data[4][2];
+        document.getElementById("News_info4").innerHTML=text.toLowerCase();
+        document.getElementById("News_img4").src = data[4][0];
+        document.getElementById("News_title44").innerHTML= data[4][1];
+        document.getElementById("News_descr44").innerHTML= data[4][2];
+        document.getElementById("News_info44").innerHTML=text.toLowerCase();
+    }
+  else {
+        document.getElementById("News_img4").src = "";
+        document.getElementById("News_title4").innerHTML= "";
+        document.getElementById("News_descr4").innerHTML= "";
+        document.getElementById("News_info4").innerHTML= "";
+        document.getElementById("News_img44").src = "";
+        document.getElementById("News_title44").innerHTML= "";
+        document.getElementById("News_descr44").innerHTML= "";
+        document.getElementById("News_info44").innerHTML= "";
+  }
+  }
+     va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE5);
+  function NEWS_UPDATE5(vaMsgObj)
+  {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
+    const data= vaMsgObj.data;
+          let Date_=data[5][3];
+          let Location_=data[5][4];
+          let State_=data[5][5];
+          // create text
+          let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
+        document.getElementById("News_img5").src = data[5][0];
+        document.getElementById("News_title5").innerHTML= data[5][1];
+        document.getElementById("News_descr5").innerHTML= data[5][2];
+        document.getElementById("News_info5").innerHTML=text.toLowerCase();
+        document.getElementById("News_img5").src = data[5][0];
+        document.getElementById("News_title55").innerHTML= data[5][1];
+        document.getElementById("News_descr55").innerHTML= data[5][2];
+        document.getElementById("News_info55").innerHTML=text.toLowerCase();
+    }
+  else {
+        document.getElementById("News_img5").src = "";
+        document.getElementById("News_title5").innerHTML= "";
+        document.getElementById("News_descr5").innerHTML= "";
+        document.getElementById("News_info5").innerHTML= "";
+        document.getElementById("News_img55").src = "";
+        document.getElementById("News_title55").innerHTML= "";
+        document.getElementById("News_descr55").innerHTML= "";
+        document.getElementById("News_info55").innerHTML= "";
   }
   }
 </script>
