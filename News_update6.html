@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="util/messagingUtil.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/** {box-sizing: border-box}*/
+
+/* Set height of body and the document to 100% */
+body, html {
+  /*height: 100%;*/
+  margin: 0;
+  font-family: Arial;
+  border-radius: 25px;
+  border-style: solid;
+}
+
+/* Style tab links */
+.tablink {
+  background-color: #555;
+  color: white;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 25%;
+}
+
+.tablink:hover {
+  background-color: #777;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+  color: black;
+  display: none;
+  padding: 100px 20px;
+  height: 100%;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns:auto auto auto;
+  grid-column: 1;
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
+
+#News1 {background-color: white}
+#News2 {background-color: white}
+#News3 {background-color: white}
+#News4 {background-color: white}
+</style>
+</head>
+<body style="background-color:white;">
+<center><h1>THE NEWS UPDATE</h1></center>
+<button class="tablink" onclick="openPage('News1', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">News 1</button>
+<button class="tablink" onclick="openPage('News2', this, 'DodgerBlue')"  style="padding: 10px;border-radius: 25px;">News 2</button>
+<button class="tablink" onclick="openPage('News3', this, 'DodgerBlue')" style="padding: 10px;border-radius: 25px;">News 3</button>
+<button class="tablink" onclick="openPage('News4', this, 'DodgerBlue')" style="padding: 10px;border-radius: 25px;">News 4</button>
+<div id="News1" class="tabcontent" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
+<div >
+<center>
+        <h2 id="News_title0"></h2>
+        <h6 id="News_info0"> </h6>
+        <hr>
+ </center> 
+</div>
+<div>                         
+        <img 
+        src="" 
+        id="News_img0" 
+              align="left"
+        width="20%"
+        height="40%"
+        style="border-radius: 10%;">
+        <p id="News_descr0" style="padding:10px;"></p>
+</div>
+</div>
+
+<div id="News2" class="tabcontent" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div >
+<center>
+        <h3 id="News_title1"></h3>
+        <h6 id="News_info1"></h6>
+        <hr>
+ </center> 
+</div>
+<div >                         
+        <img 
+        src="" 
+        id="News_img1" 
+              align="left"
+        width="20%"
+        height="40%"
+        style="border-radius: 10%;">
+        <p id="News_descr1" style="padding:10px;"></p>
+</div>
+</div>
+
+<div id="News3" class="tabcontent" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title2"></h3>
+        <h6 id="News_info2"></h6>
+        <hr>
+ </center> 
+</div>
+<div >                         
+        <img 
+        src="" 
+        id="News_img2" 
+              align="left"
+        width="20%"
+        height="40%"
+        style="border-radius: 10%;">
+        <p id="News_descr2" style="padding:10px;"></p>
+</div>
+</div>
+<div id="News4" class="tabcontent" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title3"></h3>
+        <h6 id="News_info3"></h6>
+        <hr>
+ </center> 
+</div>
+<div >                         
+        <img 
+        src="" 
+        id="News_img3" 
+              align="left"
+        width="20%"
+        height="30%"
+        style="border-radius: 10%;">
+        <p id="News_descr3" style="padding:10px;"></p>
+</div>
+</div>
+<div class="grid-container">
+<div  class="item1" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title00" style="font-size:20px;"></h3>
+        <h6 id="News_info00" style="font-size:16px;"></h6>                        
+        <img 
+        src="" 
+        id="News_img00" 
+        width="90%"
+        height="80%"
+        style="border-radius: 10%;">
+<!--         <p id="News_descr00" style="padding:10px;"></p> -->
+ </center> 
+</div>
+</div>
+<div  class="item2" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title11" style="font-size:20px;"></h3>
+        <h6 id="News_info11" style="font-size:16px;"></h6>                       
+        <img 
+        src="" 
+        id="News_img11" 
+        width="90%"
+        height="80%"
+        style="border-radius: 10%;">
+<!--         <p id="News_descr11" style="padding:15px;"></p> -->
+</center>
+</div>
+</div>
+  
+<div class="item3" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title22" style="font-size:20px;"></h3>
+        <h6 id="News_info22" style="font-size:16px;"></h6>                       
+        <img 
+        src="" 
+        id="News_img22" 
+        width="90%"
+        height="80%"
+        style="border-radius: 10%;">
+<!--         <p id="News_descr22" style="padding:15px;"></p> -->
+</center>
+</div>  
+</div>
+</div>
+<script>
+function openPage(pageName,elmnt,color) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.backgroundColor = "";
+  }
+  document.getElementById(pageName).style.display = "block";
+  elmnt.style.backgroundColor = color;
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+
+
+
+ va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE0);
+  function NEWS_UPDATE0(vaMsgObj)
+  {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
+    const data= vaMsgObj.data;
+          let Date_=data[0][3];
+          let Location_=data[0][4];
+          let State_=data[0][5];
+          // create text
+          let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
+        document.getElementById("News_img0").src = data[0][0];
+        document.getElementById("News_img00").src = data[0][0];
+        document.getElementById("News_title0").innerHTML= data[0][1];
+        document.getElementById("News_title00").innerHTML= data[0][1];
+        document.getElementById("News_descr0").innerHTML= data[0][2];
+        document.getElementById("News_descr00").innerHTML= data[0][2];
+        document.getElementById("News_info0").innerHTML=text.toLowerCase();
+        document.getElementById("News_info00").innerHTML=text.toLowerCase();
+    }
+  else {
+        document.getElementById("News_img0").src = "";
+        document.getElementById("News_img00").src = "";
+        document.getElementById("News_title0").innerHTML= "";
+        document.getElementById("News_title00").innerHTML= "";
+        document.getElementById("News_descr0").innerHTML= "";
+        document.getElementById("News_descr00").innerHTML= "";
+        document.getElementById("News_info0").innerHTML= "";
+        document.getElementById("News_info00").innerHTML= "";
+  }
+  }
+
+   va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE1);
+  function NEWS_UPDATE1(vaMsgObj)
+  {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
+    const data= vaMsgObj.data;
+          let Date_=data[1][3];
+          let Location_=data[1][4];
+          let State_=data[1][5];
+          // create text
+          let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
+        document.getElementById("News_img1").src = data[1][0];
+        document.getElementById("News_img11").src = data[1][0];
+        document.getElementById("News_title1").innerHTML= data[1][1];
+         document.getElementById("News_title11").innerHTML= data[1][1];
+        document.getElementById("News_descr1").innerHTML= data[1][2];
+        document.getElementById("News_descr11").innerHTML= data[1][2];
+        document.getElementById("News_info1").innerHTML=text.toLowerCase();
+        document.getElementById("News_info11").innerHTML=text.toLowerCase();
+    }
+  else {
+        document.getElementById("News_img1").src = "";
+        document.getElementById("News_img11").src = "";
+        document.getElementById("News_title1").innerHTML= "";
+        document.getElementById("News_title11").innerHTML= "";
+        document.getElementById("News_descr1").innerHTML= "";
+        document.getElementById("News_descr11").innerHTML= "";
+        document.getElementById("News_info1").innerHTML= "";
+        document.getElementById("News_info11").innerHTML= "";
+  }
+  }
+
+   va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE2);
+  function NEWS_UPDATE2(vaMsgObj)
+  {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
+    const data= vaMsgObj.data;
+          let Date_=data[2][3];
+          let Location_=data[2][4];
+          let State_=data[2][5];
+          // create text
+          let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
+        document.getElementById("News_img2").src = data[2][0];
+        document.getElementById("News_title2").innerHTML= data[2][1];
+        document.getElementById("News_descr2").innerHTML= data[2][2];
+        document.getElementById("News_info2").innerHTML=text.toLowerCase();
+        document.getElementById("News_img22").src = data[2][0];
+        document.getElementById("News_title22").innerHTML= data[2][1];
+        document.getElementById("News_descr22").innerHTML= data[2][2];
+        document.getElementById("News_info22").innerHTML=text.toLowerCase();
+    }
+  else {
+        document.getElementById("News_img2").src = "";
+        document.getElementById("News_title2").innerHTML= "";
+        document.getElementById("News_descr2").innerHTML= "";
+        document.getElementById("News_info2").innerHTML= "";
+        document.getElementById("News_img22").src = "";
+        document.getElementById("News_title22").innerHTML= "";
+        document.getElementById("News_descr22").innerHTML= "";
+        document.getElementById("News_info22").innerHTML= "";
+  }
+  }
+   va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE3);
+  function NEWS_UPDATE3(vaMsgObj)
+  {
+  if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
+    const data= vaMsgObj.data;
+          let Date_=data[3][3];
+          let Location_=data[3][4];
+          let State_=data[3][5];
+          // create text
+          let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
+        document.getElementById("News_img3").src = data[3][0];
+        document.getElementById("News_title3").innerHTML= data[3][1];
+        document.getElementById("News_descr3").innerHTML= data[3][2];
+        document.getElementById("News_info3").innerHTML=text.toLowerCase();
+    }
+  else {
+        document.getElementById("News_img3").src = "";
+        document.getElementById("News_title3").innerHTML= "";
+        document.getElementById("News_descr3").innerHTML= "";
+        document.getElementById("News_info3").innerHTML= "";
+  }
+  }
+</script>
+   
+</body>
+</html> 
