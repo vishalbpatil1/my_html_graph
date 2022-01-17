@@ -12,7 +12,7 @@ body, html {
   margin: 0;
   font-family: Arial;
  border-radius: none;
-  border-style: solid;
+  border-style: none;
 }
 
 /* Style tab links */
@@ -53,15 +53,12 @@ body, html {
   padding: 20px 0;
   font-size: 30px;
 }
-
-#News1 {background-color: white}
-#News2 {background-color: white}
-#News3 {background-color: white}
-#News4 {background-color: white}
 </style>
 </head>
 <body style="background-color:white;">
+<div style="background-color: white;border-radius: 25px;border-style: solid;">
 <center><h1>THE NEWS UPDATE</h1></center>
+</div>
 <div id="News1" class="tabcontent" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
 <div >
 <center>
@@ -80,7 +77,7 @@ body, html {
         style="border-radius: 10%;">
         <p id="News_descr0" style="padding:15px;"></p>
         <form action="https://timesofindia.indiatimes.com/">
-    <input type="submit" value="Reference link" />
+    <input type="submit" value="Reference link"  style="padding:15px;" />
 </form>
 </div>
 </div>
@@ -102,6 +99,9 @@ body, html {
         height="40%"
         style="border-radius: 10%;">
         <p id="News_descr1" style="padding:15px;"></p>
+  <form action="https://timesofindia.indiatimes.com/">
+    <input type="submit" value="Reference link"  style="padding:15px;" />
+</form>
 </div>
 </div>
 
@@ -122,6 +122,9 @@ body, html {
         height="40%"
         style="border-radius: 10%;">
         <p id="News_descr2" style="padding:15px;"></p>
+  <form action="https://timesofindia.indiatimes.com/">
+    <input type="submit" value="Reference link"  style="padding:15px;" />
+</form>
 </div>
 </div>
 <div id="News4" class="tabcontent" style="background-color: LightGray;padding: 1px;border-radius: 25px;border-style: solid;">
@@ -141,6 +144,9 @@ body, html {
         height="30%"
         style="border-radius: 10%;">
         <p id="News_descr3" style="padding:15px;"></p>
+  <form action="https://timesofindia.indiatimes.com/">
+    <input type="submit" value="Reference link"  style="padding:15px;" />
+</form>
 </div>
 </div>
 <div class="grid-container">
@@ -155,7 +161,7 @@ body, html {
         width="90%"
         height="80%"
         style="border-radius: 10%;">
-        <button class="tablink" onclick="openPage('News1', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">News 1</button>
+        <button class="tablink" onclick="openPage('News1', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">Read More</button>
 <!--         <p id="News_descr00" style="padding:10px;"></p> -->
  </center> 
 </div>
@@ -171,7 +177,7 @@ body, html {
         width="90%"
         height="80%"
         style="border-radius: 10%;">
-  <button class="tablink" onclick="openPage('News2', this, 'DodgerBlue')"  style="padding: 10px;border-radius: 25px;">News 2</button>
+  <button class="tablink" onclick="openPage('News2', this, 'DodgerBlue')"  style="padding: 10px;border-radius: 25px;">Read More</button>
 <!--         <p id="News_descr11" style="padding:15px;"></p> -->
 </center>
 </div>
@@ -188,10 +194,42 @@ body, html {
         width="90%"
         height="80%"
         style="border-radius: 10%;">
-  <button class="tablink" onclick="openPage('News3', this, 'DodgerBlue')" style="padding: 10px;border-radius: 25px;">News 3</button>
+  <button class="tablink" onclick="openPage('News3', this, 'DodgerBlue')" style="padding: 10px;border-radius: 25px;">Read More</button>
 <!--         <p id="News_descr22" style="padding:15px;"></p> -->
 </center>
 </div>  
+</div>
+<div  class="item4" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title00" style="font-size:20px;"></h3>
+        <h6 id="News_info00" style="font-size:16px;"></h6>                        
+        <img 
+        src="" 
+        id="News_img00" 
+        width="90%"
+        height="80%"
+        style="border-radius: 10%;">
+        <button class="tablink" onclick="openPage('News1', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">Read More</button>
+<!--         <p id="News_descr00" style="padding:10px;"></p> -->
+ </center> 
+</div>
+</div>
+<div  class="item1" style="background-color: white;padding: 1px;border-radius: 25px;border-style: solid;">
+<div>
+<center>
+        <h3 id="News_title00" style="font-size:20px;"></h3>
+        <h6 id="News_info00" style="font-size:16px;"></h6>                        
+        <img 
+        src="" 
+        id="News_img00" 
+        width="90%"
+        height="80%"
+        style="border-radius: 10%;">
+        <button class="tablink" onclick="openPage('News1', this, 'DodgerBlue')" id="defaultOpen" style="padding: 10px;border-radius: 25px;">Read More</button>
+<!--         <p id="News_descr00" style="padding:10px;"></p> -->
+ </center> 
+</div>
 </div>
 </div>
 <script>
