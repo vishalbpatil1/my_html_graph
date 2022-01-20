@@ -305,7 +305,7 @@ document.getElementById("defaultOpen").click();
 
 
 
- va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE0);
+  va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE0);
   function NEWS_UPDATE0(vaMsgObj)
   {
   if (vaMsgObj && vaMsgObj.data && vaMsgObj.rowCount > 1) {
@@ -316,26 +316,26 @@ document.getElementById("defaultOpen").click();
           // create text
           let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
         document.getElementById("News_img0").src = data[0][0];
-        document.getElementById("News_img00").src = data[0][0];
         document.getElementById("News_title0").innerHTML= data[0][1];
-        document.getElementById("News_title00").innerHTML= data[0][1];
         document.getElementById("News_descr0").innerHTML= data[0][2];
-        document.getElementById("News_descr00").innerHTML= data[0][2];
         document.getElementById("News_info0").innerHTML=text.toLowerCase();
+        document.getElementById("News_img00").src = data[0][0];
+        document.getElementById("News_title00").innerHTML= data[0][1];
+        document.getElementById("News_descr00").innerHTML= data[0][2];
         document.getElementById("News_info00").innerHTML=text.toLowerCase();
     }
   else {
         document.getElementById("News_img0").src = "";
-        document.getElementById("News_img00").src = "";
         document.getElementById("News_title0").innerHTML= "";
-        document.getElementById("News_title00").innerHTML= "";
         document.getElementById("News_descr0").innerHTML= "";
-        document.getElementById("News_descr00").innerHTML= "";
         document.getElementById("News_info0").innerHTML= "";
+        document.getElementById("News_img00").src = "";
+        document.getElementById("News_title00").innerHTML= "";
+        document.getElementById("News_descr00").innerHTML= "";
         document.getElementById("News_info00").innerHTML= "";
   }
   }
-
+ 
    va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE1);
   function NEWS_UPDATE1(vaMsgObj)
   {
@@ -347,26 +347,26 @@ document.getElementById("defaultOpen").click();
           // create text
           let text =`Date&nbsp;:&nbsp; ${Date_}&nbsp;&nbsp;&nbsp;Location&nbsp;:&nbsp; ${Location_}&nbsp;&nbsp;&nbsp;State&nbsp;:&nbsp; ${State_}`;
         document.getElementById("News_img1").src = data[1][0];
-        document.getElementById("News_img11").src = data[1][0];
         document.getElementById("News_title1").innerHTML= data[1][1];
-         document.getElementById("News_title11").innerHTML= data[1][1];
         document.getElementById("News_descr1").innerHTML= data[1][2];
-        document.getElementById("News_descr11").innerHTML= data[1][2];
         document.getElementById("News_info1").innerHTML=text.toLowerCase();
+        document.getElementById("News_img11").src = data[1][0];
+        document.getElementById("News_title11").innerHTML= data[1][1];
+        document.getElementById("News_descr11").innerHTML= data[1][2];
         document.getElementById("News_info11").innerHTML=text.toLowerCase();
     }
   else {
         document.getElementById("News_img1").src = "";
-        document.getElementById("News_img11").src = "";
         document.getElementById("News_title1").innerHTML= "";
-        document.getElementById("News_title11").innerHTML= "";
         document.getElementById("News_descr1").innerHTML= "";
-        document.getElementById("News_descr11").innerHTML= "";
         document.getElementById("News_info1").innerHTML= "";
+        document.getElementById("News_img11").src = "";
+        document.getElementById("News_title11").innerHTML= "";
+        document.getElementById("News_descr11").innerHTML= "";
         document.getElementById("News_info11").innerHTML= "";
   }
   }
-
+ 
    va.messagingUtil.setOnDataReceivedCallback(NEWS_UPDATE2);
   function NEWS_UPDATE2(vaMsgObj)
   {
